@@ -5,13 +5,13 @@ Created on Wed Mar 23 12:37:57 2016
 @author: Administrator
 """
 
-from ntes import ntesdata
+from old_ntes import ntesdata
 import redis,json
 
 r = redis.StrictRedis(host='spbgcapital.f3322.net',port=6379,db=0)
 
 def callback(input):
-    print(json.dumps(input))
+    r.rpush('ntes',json.dumps(input))
   #  r.rpush('ntes',json.dumps(input)
     
 

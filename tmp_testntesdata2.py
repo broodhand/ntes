@@ -4,7 +4,7 @@ Created on Tue Mar 22 10:57:52 2016
 
 @author: Administrator
 """
-from ntes import ntesdata
+from old_ntes import ntesdata
 
 import json,time
 
