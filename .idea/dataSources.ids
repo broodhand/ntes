@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="MySQL - spbgcapital@spbgcapital.f3322.net" uuid="d474840e-ad61-4e7a-b69d-59b2a2611526">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+    <database-model serializer="dbm" rdbms="MYSQL" format-version="2.5">
+      <schema id="1" name="spbgcapital"/>
+    </database-model>
+  </data-source>
+</component>

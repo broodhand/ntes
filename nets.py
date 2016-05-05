@@ -69,3 +69,4 @@ class NtesTickData(object):
                     callback_func(v_new)
                     v_init = v_new
 # End
+
