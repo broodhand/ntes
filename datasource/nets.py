@@ -13,10 +13,10 @@ import time
 import types
 
 
-# Get the data which from the NTES stock api
+# Get the data which from the nets stock api
 
 
-class NtesTickData(object):
+class TickData(object):
     # Get the stocks' code for the class's initial property
     def __init__(self, code):
         self.code = code
@@ -32,7 +32,10 @@ class NtesTickData(object):
                 data = f.read()
             data_proc = data.decode('utf-8')[21:-2]
             if data_proc != '{ }':
-                return list(json.loads(data_proc).values())[0]
+                dictdata = list(json.loads(data_proc).values())[0]
+                if isinstance(dictdata,dict):
+                    dictdata['source'] = 'nets'
+                return dictdata
 
     # Get the value from the nets api.This is a generator.
     # The 'interval' which is a parameter is control the interval between twice
@@ -42,10 +45,14 @@ class NtesTickData(object):
             yield self.value
             time.sleep(interval)
 
-    # Get the value form the ntes api.This is a data stream.
+    # Get the value form the nets api.This is a data stream.
     # You can get data from callback function.
     def value_stream(self, interval=3, callback_func=lambda x: print(x)):
         # Get the data without time and update
+        initvalue = self.value
+        initdata = None
+        newdata = None
+
         def __proc(data_dict):
             if isinstance(data_dict, dict):
                 data = data_dict.copy()
@@ -53,20 +60,16 @@ class NtesTickData(object):
                     return {'time': data.pop('time'), 'update': data.pop('update'), 'data': data}
             return None
 
-        v_init = self.value
-        data_init = None
-        data_new = None
-
         if isinstance(callback_func, types.FunctionType):
-            if v_init:
-                callback_func(v_init)
-            for v_new in self.value_generator(interval):
-                if isinstance(v_init, dict):
-                    data_init = __proc(v_init).get('data')
-                if isinstance(v_new, dict):
-                    data_new = __proc(v_new).get('data')
-                if v_new and (data_new != data_init):
-                    callback_func(v_new)
-                    v_init = v_new
+            if initvalue:
+                callback_func(initvalue)
+            for newvalue in self.value_generator(interval):
+                if isinstance(initvalue, dict):
+                    initdata = __proc(initvalue).get('data')
+                if isinstance(newvalue, dict):
+                    newdata = __proc(newvalue).get('data')
+                if newvalue and (newdata != initdata):
+                    callback_func(newvalue)
+                    initvalue = newvalue
 # End
 

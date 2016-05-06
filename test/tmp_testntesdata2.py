@@ -4,10 +4,7 @@ Created on Tue Mar 22 10:57:52 2016
 
 @author: Administrator
 """
-from old_ntes import ntesdata
-
-import json,time
-
+from test.old_ntes import ntesdata
 
 data = ntesdata('150201').get()
 

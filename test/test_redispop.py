@@ -8,6 +8,6 @@ import redis
 
 r = redis.StrictRedis(host='spbgcapital.f3322.net', port=6379, db=0)
 while True:
-    if r.llen('ntes') > 0:
-        print(r.rpop('ntes'))
-        print(r.llen('ntes'))
+    if r.llen('spbgcapital') > 0:
+        print(r.rpop('spbgcapital'))
+        print(r.llen('spbgcapital'))

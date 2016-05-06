@@ -3,12 +3,20 @@
     <words>
       <w>backurl</w>
       <w>cfgfile</w>
+      <w>cfghost</w>
+      <w>cfglist</w>
+      <w>cfgport</w>
       <w>cheng</w>
       <w>fronturl</w>
+      <w>initdata</w>
+      <w>initvalue</w>
+      <w>newdata</w>
+      <w>newvalue</w>
       <w>ntes</w>
       <w>proc</w>
       <w>rediscfg</w>
       <w>redisconfig</w>
+      <w>redisdb</w>
       <w>spbgcapital</w>
       <w>urllist</w>
       <w>zhao</w>
