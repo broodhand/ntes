@@ -11,7 +11,7 @@ import json
 
 
 class RedisDB(object):
-    def __init__(self, rediscfg='rediscfg'):
+    def __init__(self, rediscfg='database/redisdb.cfg'):
         self.rediscfg = rediscfg
         config = configparser.ConfigParser()
         with open(self.rediscfg, 'r') as cfgfile:
@@ -25,12 +25,21 @@ class RedisDB(object):
         r = redis.Redis(connection_pool=pool)
         return r
 
+    def popdata(self,callback_func=lambda x: print(x)):
+        r = self.connect()
+        num = r.llen(self.cfglist)
+        while True:
+            if num > 0:
+                callback_func(json.loads(r.rpop(self.cfglist)))
+                print(num)
+            num = r.llen(self.cfglist)
 
-def redis_callback(dictdata):
+
+def rediscallback(dictdata):
     redisdb = RedisDB()
     r = redisdb.connect()
-    if isinstance(dictdata,dict):
-        try:
-            r.lpush(redisdb.cfglist, json.dumps(dictdata))
-        print(r.llen(redisdb.cfglist))
+    if isinstance(dictdata, dict):
+        print("DATA:", dictdata)
+        print("NUM:", r.lpush(redisdb.cfglist, json.dumps(dictdata)))
+
     return None

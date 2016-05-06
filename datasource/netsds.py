@@ -16,7 +16,7 @@ import types
 # Get the data which from the nets stock api
 
 
-class TickData(object):
+class NetsTickData(object):
     # Get the stocks' code for the class's initial property
     def __init__(self, code):
         self.code = code

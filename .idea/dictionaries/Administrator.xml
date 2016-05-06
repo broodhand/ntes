@@ -7,13 +7,16 @@
       <w>cfglist</w>
       <w>cfgport</w>
       <w>cheng</w>
+      <w>dictdata</w>
       <w>fronturl</w>
       <w>initdata</w>
       <w>initvalue</w>
       <w>newdata</w>
       <w>newvalue</w>
       <w>ntes</w>
+      <w>popdata</w>
       <w>proc</w>
+      <w>rediscallback</w>
       <w>rediscfg</w>
       <w>redisconfig</w>
       <w>redisdb</w>
