@@ -2,12 +2,23 @@
   <dictionary name="Administrator">
     <words>
       <w>backurl</w>
+      <w>calback</w>
       <w>cfgfile</w>
       <w>cfghost</w>
       <w>cfglist</w>
       <w>cfgport</w>
       <w>cheng</w>
+      <w>datas</w>
       <w>dictdata</w>
+      <w>elasticsearch</w>
+      <w>elasticsearchdb</w>
+      <w>escfg</w>
+      <w>esdata</w>
+      <w>esdatas</w>
+      <w>esdb</w>
+      <w>esid</w>
+      <w>esindex</w>
+      <w>estype</w>
       <w>fronturl</w>
       <w>initdata</w>
       <w>initvalue</w>
@@ -16,6 +27,7 @@
       <w>ntes</w>
       <w>popdata</w>
       <w>proc</w>
+      <w>pulldata</w>
       <w>rediscallback</w>
       <w>rediscfg</w>
       <w>redisconfig</w>

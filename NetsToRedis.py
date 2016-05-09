@@ -8,7 +8,7 @@ Created on Thu Mar 24 11:02:14 2016
 import database
 import datasource
 
-td = database.rediscallback
+td = database.callback_redis
 n = datasource.NetsTickData('204001')
 
 n.value_stream(callback_func=td)

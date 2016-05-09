@@ -33,8 +33,9 @@ class NetsTickData(object):
             data_proc = data.decode('utf-8')[21:-2]
             if data_proc != '{ }':
                 dictdata = list(json.loads(data_proc).values())[0]
-                if isinstance(dictdata,dict):
+                if isinstance(dictdata, dict):
                     dictdata['source'] = 'nets'
+                    dictdata['type'] = 'tick'
                 return dictdata
 
     # Get the value from the nets api.This is a generator.

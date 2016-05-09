@@ -18,4 +18,4 @@ def callback(dictdata):
     return None
 
 redis = database.RedisDB()
-redis.popdata(callback_func=callback)
+redis.pop_stream(callback_func=callback)

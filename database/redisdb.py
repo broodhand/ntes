@@ -4,14 +4,14 @@ Created on Wed Mar 23 12:37:57 2016
 
 @author: Zhao Cheng
 """
-
+from datetime import datetime
 import configparser
 import redis
 import json
 
 
 class RedisDB(object):
-    def __init__(self, rediscfg='database/redisdb.cfg'):
+    def __init__(self, rediscfg='/redisdb.cfg'):
         self.rediscfg = rediscfg
         config = configparser.ConfigParser()
         with open(self.rediscfg, 'r') as cfgfile:
@@ -25,7 +25,7 @@ class RedisDB(object):
         r = redis.Redis(connection_pool=pool)
         return r
 
-    def popdata(self,callback_func=lambda x: print(x)):
+    def pop_stream(self, callback_func=lambda x: print(x)):
         r = self.connect()
         num = r.llen(self.cfglist)
         while True:
@@ -35,12 +35,17 @@ class RedisDB(object):
                 print(num)
             num = r.llen(self.cfglist)
 
+    def push(self, dictdata):
+        r = self.connect()
+        if isinstance(dictdata, dict):
+            print('TIME:', datetime.now())
+            print("DATA:", dictdata)
+            print("NUM:", r.lpush(self.cfglist, json.dumps(dictdata)))
+        return None
 
-def rediscallback(dictdata):
+
+def callback_redis(dictdata):
     redisdb = RedisDB()
-    r = redisdb.connect()
-    if isinstance(dictdata, dict):
-        print("DATA:", dictdata)
-        print("NUM:", r.lpush(redisdb.cfglist, json.dumps(dictdata)))
-
+    redisdb.push(dictdata)
     return None
+
