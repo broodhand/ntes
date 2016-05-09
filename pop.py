@@ -7,8 +7,10 @@ Created on Thu Mar 24 11:02:14 2016
 
 import database
 data = []
+
+
 def callback(dictdata):
-    if len(data) < 500:
+    if len(data) < 10:
         data.append(dictdata)
     else:
         while len(data) > 0:

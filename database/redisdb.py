@@ -30,7 +30,8 @@ class RedisDB(object):
         num = r.llen(self.cfglist)
         while True:
             if num > 0:
-                callback_func(json.loads(r.rpop(self.cfglist)))
+                data = r.rpop(self.cfglist).decode('utf-8')
+                callback_func(json.loads(data))
                 print(num)
             num = r.llen(self.cfglist)
 

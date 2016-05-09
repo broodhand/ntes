@@ -4,7 +4,6 @@ Created on Thu Mar 24 14:24:10 2016
 
 @author: Administrator
 """
-
 from datetime import datetime
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
