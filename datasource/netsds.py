@@ -72,5 +72,29 @@ class NetsTickData(object):
                 if newvalue and (newdata != initdata):
                     callback_func(newvalue)
                     initvalue = newvalue
-# End
 
+    def value_stream1(self, callback_func=lambda x: print(x), interval=3, cachenum=0, cachetime=0):
+        # Get the data without time and update
+        def __proc(data_dict):
+            if isinstance(data_dict, dict):
+                data = data_dict.copy()
+                if ('time' in data) and ('update' in data):
+                    return {'time': data.pop('time'), 'update': data.pop('update'), 'data': data}
+            return None
+
+        initvalue = self.value
+        initdata = None
+        newdata = None
+        if isinstance(callback_func, types.FunctionType):
+            if initvalue:
+                callback_func(initvalue)
+            for newvalue in self.value_generator(interval):
+                if isinstance(initvalue, dict):
+                    initdata = __proc(initvalue).get('data')
+                if isinstance(newvalue, dict):
+                    newdata = __proc(newvalue).get('data')
+                if newvalue and (newdata != initdata):
+                    callback_func(newvalue)
+                    initvalue = newvalue
+
+# End

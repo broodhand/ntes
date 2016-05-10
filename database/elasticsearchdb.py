@@ -46,8 +46,6 @@ class EsDB(object):
             helpers.bulk(es, actions)
 
 actions_cache = []
-
-
 def callback_es(esdata):
     if isinstance(esdata, dict):
         esindex = esdata['sources']

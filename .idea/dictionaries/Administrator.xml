@@ -20,8 +20,10 @@
       <w>esindex</w>
       <w>estype</w>
       <w>fronturl</w>
+      <w>havedata</w>
       <w>initdata</w>
       <w>initvalue</w>
+      <w>lastproc</w>
       <w>newdata</w>
       <w>newvalue</w>
       <w>ntes</w>
