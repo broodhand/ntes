@@ -11,5 +11,5 @@ import datasource
 td = database.callback_redis
 n = datasource.NetsTickData('204001')
 
-n.value_stream(callback_func=td)
+n.value_stream1(td)
 

@@ -6,8 +6,9 @@ Created on Thu Mar 24 11:02:14 2016
 """
 
 # Get the stock data from api.money.126.net
-
+from datetime import datetime
 from urllib import request
+from datastructure import Cache
 import json
 import time
 import types
@@ -73,7 +74,8 @@ class NetsTickData(object):
                     callback_func(newvalue)
                     initvalue = newvalue
 
-    def value_stream1(self, callback_func=lambda x: print(x), interval=3, cachenum=0, cachetime=0):
+    # The stream class with the cache function
+    def value_cachestream(self, callback_func=lambda x: print(x), interval=3, cachenum=500, cacheseconds=60):
         # Get the data without time and update
         def __proc(data_dict):
             if isinstance(data_dict, dict):
@@ -81,20 +83,43 @@ class NetsTickData(object):
                 if ('time' in data) and ('update' in data):
                     return {'time': data.pop('time'), 'update': data.pop('update'), 'data': data}
             return None
-
         initvalue = self.value
         initdata = None
         newdata = None
+        cache = Cache(num=cachenum, seconds=cacheseconds)
+        proctime = datetime.now()
         if isinstance(callback_func, types.FunctionType):
+
             if initvalue:
-                callback_func(initvalue)
+                cache.push(initvalue)
+                tmpdata = cache.pop()
+
+                if tmpdata:
+                    callback_func(tmpdata)
+
+                proctime = datetime.now()
+
             for newvalue in self.value_generator(interval):
                 if isinstance(initvalue, dict):
                     initdata = __proc(initvalue).get('data')
+
                 if isinstance(newvalue, dict):
                     newdata = __proc(newvalue).get('data')
+
                 if newvalue and (newdata != initdata):
-                    callback_func(newvalue)
+                    cache.push(newvalue)
+                    tmpdata = cache.pop()
+
+                    if tmpdata:
+                        callback_func(tmpdata)
+
+                    proctime = datetime.now()
                     initvalue = newvalue
 
+                elif (datetime.now()-proctime).seconds >= cacheseconds and cache.proc:
+                    tmpdata = cache.pop()
+
+                    if tmpdata:
+                        callback_func(tmpdata)
+                        proctime = datetime.now()
 # End

@@ -41,11 +41,15 @@ class RedisDB(object):
             print('TIME:', datetime.now())
             print("DATA:", dictdata)
             print("NUM:", r.lpush(self.cfglist, json.dumps(dictdata)))
-        return None
 
 
-def callback_redis(dictdata):
+def callback_redis(datas):
     redisdb = RedisDB()
-    redisdb.push(dictdata)
-    return None
+    if isinstance(datas, dict):
+        redisdb.push(datas)
+    if isinstance(datas, tuple) or isinstance(datas, list):
+        for data in datas:
+            if isinstance(data, dict):
+                redisdb.push(data)
+    return redisdb.connect().llen(redisdb.cfglist)
 

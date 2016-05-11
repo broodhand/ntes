@@ -2,6 +2,9 @@
   <dictionary name="Administrator">
     <words>
       <w>backurl</w>
+      <w>cachenum</w>
+      <w>cacheseconds</w>
+      <w>cachestream</w>
       <w>calback</w>
       <w>cfgfile</w>
       <w>cfghost</w>
@@ -29,12 +32,14 @@
       <w>ntes</w>
       <w>popdata</w>
       <w>proc</w>
+      <w>proctime</w>
       <w>pulldata</w>
       <w>rediscallback</w>
       <w>rediscfg</w>
       <w>redisconfig</w>
       <w>redisdb</w>
       <w>spbgcapital</w>
+      <w>tmpdata</w>
       <w>urllist</w>
       <w>zhao</w>
     </words>
