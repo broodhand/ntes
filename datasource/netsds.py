@@ -43,13 +43,13 @@ class NetsTickData(object):
     # The 'interval' which is a parameter is control the interval between twice
     # getting data.
     def value_generator(self, interval=3):
-        while True:
+        while 1:
             yield self.value
             time.sleep(interval)
 
     # Get the value form the nets api.This is a data stream.
     # You can get data from callback function.
-    def value_stream(self, interval=3, callback_func=lambda x: print(x)):
+    def value_stream(self, callback_func=lambda x: print(x), interval=3):
         # Get the data without time and update
         initvalue = self.value
         initdata = None
@@ -83,6 +83,7 @@ class NetsTickData(object):
                 if ('time' in data) and ('update' in data):
                     return {'time': data.pop('time'), 'update': data.pop('update'), 'data': data}
             return None
+
         initvalue = self.value
         initdata = None
         newdata = None
@@ -122,4 +123,16 @@ class NetsTickData(object):
                     if tmpdata:
                         callback_func(tmpdata)
                         proctime = datetime.now()
-# End
+
+    def value_cachestream2(self, callback_func=lambda x: print(x), interval=3, cachenum=500, cacheseconds=60):
+        # Get the data without time and update
+        import os
+        cache = Cache(num=cachenum, seconds=cacheseconds)
+        callback_cache = cache.push
+        pid = os.fork()
+        if pid == 0:
+            self.value_stream(callback_cache)
+        else:
+            for data in cache.stream(interval):
+                callback_func(data)
+

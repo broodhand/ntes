@@ -29,13 +29,21 @@ class Cache(object):
         time = datetime.now()
         seconds = (time - self.time_lastproc).seconds
         if len(self.result) > 0:
+            if len(self.result) == 1 and len(self.datas) == 0:
+                self.proc = False
             return self.result.pop(0)
-        elif len(self.result) == 0 and len(self.datas) > 0 and seconds >= self.seconds:
+        elif len(self.datas) > 0 and seconds >= self.seconds:
             self.result.append(tuple(self.datas))
             self.datas.clear()
             self.time_lastproc = time
             self.proc = False
             return self.result.pop(0)
+
+    def stream(self, interval=3):
+        import time
+        while 1:
+            yield self.pop()
+            time.sleep(interval)
 
     def clear(self):
         self.time_lastproc = datetime.now()

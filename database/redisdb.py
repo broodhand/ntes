@@ -35,6 +35,28 @@ class RedisDB(object):
                 print(num)
             num = r.llen(self.cfglist)
 
+    def pop_cachestream(self, callback_func=lambda x: print(x), cachenum=500, cacheseconds=60):
+        from datastructure import Cache
+        from datetime import datetime
+        r = self.connect()
+        num = r.llen(self.cfglist)
+        cache = Cache(cachenum, cacheseconds)
+        proctime = datetime.now()
+        while 1:
+            if num > 0:
+                data = r.rpop(self.cfglist).decode('utf-8')
+                cache.push(json.loads(data))
+                tmpdata = cache.pop()
+                if tmpdata:
+                    callback_func(data)
+                proctime = datetime.now()
+            elif (datetime.now() - proctime).seconds > cacheseconds:
+                tmpdata = cache.pop()
+                if tmpdata:
+                    callback_func(data)
+                proctime = datetime.now()
+            num = r.llen(self.cfglist)
+
     def push(self, dictdata):
         r = self.connect()
         if isinstance(dictdata, dict):
