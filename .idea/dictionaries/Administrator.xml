@@ -23,10 +23,14 @@
       <w>esindex</w>
       <w>estype</w>
       <w>fronturl</w>
+      <w>getncode</w>
       <w>havedata</w>
       <w>initdata</w>
       <w>initvalue</w>
       <w>lastproc</w>
+      <w>ncodelist</w>
+      <w>ncodes</w>
+      <w>netstd</w>
       <w>newdata</w>
       <w>newvalue</w>
       <w>ntes</w>

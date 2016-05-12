@@ -17,10 +17,29 @@ import types
 # Get the data which from the nets stock api
 
 
-class NetsTickData(object):
+def getncode(code):
+    fronturl = 'http://api.money.126.net/data/feed/'
+    backurl = ',money.api'
+    ncodelist = [str(x) + code for x in range(10)]
+    ncodes = list()
+    for code in ncodelist:
+        url = fronturl + code + backurl
+        with request.urlopen(url) as f:
+            data = f.read()
+        data_proc = data.decode('utf-8')[21:-2]
+        if data_proc != '{ }':
+            ncodes.append(code)
+    return ncodes
+
+
+class TNets(object):
     # Get the stocks' code for the class's initial property
     def __init__(self, code):
-        self.code = code
+        if isinstance(code, int):
+            self.code = str(code)
+        else:
+            self.code = code
+        self.ncodes = getncode(self.code)
 
     # Get the json data from nets api
     @property
@@ -126,9 +145,12 @@ class NetsTickData(object):
 
     def value_cachestream2(self, callback_func=lambda x: print(x), interval=3, cachenum=500, cacheseconds=60):
         # Get the data without time and update
+        from multiprocessing import Process
+        from multiprocessing import Queue
         import os
         cache = Cache(num=cachenum, seconds=cacheseconds)
         callback_cache = cache.push
+        q = Queue()
         pid = os.fork()
         if pid == 0:
             self.value_stream(callback_cache)
