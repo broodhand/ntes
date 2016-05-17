@@ -11,6 +11,7 @@
       <w>cfglist</w>
       <w>cfgport</w>
       <w>cheng</w>
+      <w>codestr</w>
       <w>datas</w>
       <w>dictdata</w>
       <w>elasticsearch</w>
@@ -24,10 +25,12 @@
       <w>estype</w>
       <w>fronturl</w>
       <w>getncode</w>
+      <w>getncodes</w>
       <w>havedata</w>
       <w>initdata</w>
       <w>initvalue</w>
       <w>lastproc</w>
+      <w>ncode</w>
       <w>ncodelist</w>
       <w>ncodes</w>
       <w>netstd</w>

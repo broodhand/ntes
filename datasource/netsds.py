@@ -7,29 +7,69 @@ Created on Thu Mar 24 11:02:14 2016
 
 # Get the stock data from api.money.126.net
 from datetime import datetime
-from urllib import request
 from datastructure import Cache
 import json
 import time
 import types
-
-
+import logging
+logging.basicConfig(level=logging.INFO)
 # Get the data which from the nets stock api
 
-
+# Get the nets code
 def getncode(code):
+    from urllib import request
+
+    if isinstance(code, int):
+        code = str(code)
+
+    if isinstance(code, str):
+        fronturl = 'http://api.money.126.net/data/feed/'
+        backurl = ',money.api'
+        ncodelist = [str(x) + code for x in range(10)]
+
+        for ncode in ncodelist:
+            url = fronturl + ncode + backurl
+
+            with request.urlopen(url) as f:
+                data = f.read()
+
+            data_proc = data.decode('utf-8')[21:-2]
+
+            if data_proc != '{ }':
+                return ncode
+
+
+def getncode1(code):
+    from urllib import request
+
     fronturl = 'http://api.money.126.net/data/feed/'
     backurl = ',money.api'
-    ncodelist = [str(x) + code for x in range(10)]
+    codes = list()
+    if isinstance(code,int)
+
+    if isinstance(code, (str, int)):
+        codes.append(code)
+        codes = tuple(codes)
+    elif isinstance(code, (list, tuple)):
+        codes = tuple(code)
+    logging.info(codes)
+
+       # ncodelist = [str(x) + code for x in range(10)]
+   # codestr = ','.join(ncodelist)
+  #  url = fronturl + codestr + backurl
+  #  with request.urlopen(url) as f:
+    #    return f.read()
+
+
+def getncodes(codes):
     ncodes = list()
-    for code in ncodelist:
-        url = fronturl + code + backurl
-        with request.urlopen(url) as f:
-            data = f.read()
-        data_proc = data.decode('utf-8')[21:-2]
-        if data_proc != '{ }':
-            ncodes.append(code)
-    return ncodes
+    if isinstance(codes, (int, str)):
+        ncodes.append(getncode(codes))
+    elif isinstance(codes, (list, tuple)):
+        for code in codes:
+            if isinstance(code, (int, str)):
+                ncodes.append(getncode(code))
+    return tuple(ncodes)
 
 
 class TNets(object):
