@@ -5,7 +5,7 @@ Created on Thu Mar 24 11:02:14 2016
 @author:Zhao Cheng
 """
 
-# Get the stock data from api.money.126.net
+# 通过api获取网易数据
 from datetime import datetime
 from datastructure import Cache
 import json
@@ -13,30 +13,61 @@ import time
 import types
 import logging
 logging.basicConfig(level=logging.INFO)
-# Get the data which from the nets stock api
 
-# Get the nets code
-def getncode(code):
+
+# 通过标准代码获取网易数据
+def getnvalue(*codes):
     from urllib import request
+    import json
+    fronturl = 'http://api.money.126.net/data/feed/'
+    backurl = ',money.api'
+    codelist = list()
+    logging.info(len(codes))
 
-    if isinstance(code, int):
-        code = str(code)
+    if len(codes) > 1010:
+        raise ValueError('Too many code input: %s' % len(codes))
 
-    if isinstance(code, str):
-        fronturl = 'http://api.money.126.net/data/feed/'
-        backurl = ',money.api'
-        ncodelist = [str(x) + code for x in range(10)]
+    for code in codes:
+        codelist.append(str(code))
 
-        for ncode in ncodelist:
-            url = fronturl + ncode + backurl
+    url = fronturl + ','.join(codelist) + backurl
 
-            with request.urlopen(url) as f:
-                data = f.read()
+    with request.urlopen(url) as f:
+        data = f.read()
 
-            data_proc = data.decode('utf-8')[21:-2]
+    jdata = json.loads(data.decode('utf-8')[21:-2])
 
-            if data_proc != '{ }':
-                return ncode
+
+    return jdata
+
+
+def getvalue(*codes):
+    from urllib import request
+    fronturl = 'http://api.money.126.net/data/feed/'
+    backurl = ',money.api'
+    codelist = list()
+    logging.info(len(codes))
+
+    if len(codes) > 100:
+        raise ValueError('Too many code input: %s' % len(codes))
+
+    for code in codes:
+        codelist = codelist + [str(x) + str(code) for x in range(10)]
+    url = fronturl + ','.join(codelist) + backurl
+
+    with request.urlopen(url) as f:
+        data = f.read()
+
+    data_proc = data.decode('utf-8')[21:-2]
+
+    return data_proc
+
+
+
+
+
+
+
 
 
 def getncode1(code):
@@ -45,7 +76,8 @@ def getncode1(code):
     fronturl = 'http://api.money.126.net/data/feed/'
     backurl = ',money.api'
     codes = list()
-    if isinstance(code,int)
+    if isinstance(code,int):
+        pass
 
     if isinstance(code, (str, int)):
         codes.append(code)

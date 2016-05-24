@@ -11,6 +11,7 @@
       <w>cfglist</w>
       <w>cfgport</w>
       <w>cheng</w>
+      <w>codelist</w>
       <w>codestr</w>
       <w>datas</w>
       <w>dictdata</w>
@@ -26,9 +27,11 @@
       <w>fronturl</w>
       <w>getncode</w>
       <w>getncodes</w>
+      <w>getnvalue</w>
       <w>havedata</w>
       <w>initdata</w>
       <w>initvalue</w>
+      <w>jdata</w>
       <w>lastproc</w>
       <w>ncode</w>
       <w>ncodelist</w>
@@ -36,6 +39,7 @@
       <w>netstd</w>
       <w>newdata</w>
       <w>newvalue</w>
+      <w>nmax</w>
       <w>ntes</w>
       <w>popdata</w>
       <w>proc</w>
@@ -46,6 +50,7 @@
       <w>redisconfig</w>
       <w>redisdb</w>
       <w>spbgcapital</w>
+      <w>standcode</w>
       <w>tmpdata</w>
       <w>urllist</w>
       <w>zhao</w>
