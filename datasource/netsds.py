@@ -8,21 +8,21 @@ Created on Thu Mar 24 11:02:14 2016
 # 通过api获取网易数据
 from datetime import datetime
 from datastructure import Cache
-import json
+from urllib import request
 import time
 import types
 import logging
 logging.basicConfig(level=logging.INFO)
 
 
-# 通过标准代码获取网易数据
-def getnvalue(*codes):
-    from urllib import request
-    import json
+# 通过网易代码异步获取网易api数据，最大限制1000数据
+async def __asyncgetnvalue(sessions, results, *codes):
+    import aiohttp
     fronturl = 'http://api.money.126.net/data/feed/'
     backurl = ',money.api'
     codelist = list()
-    logging.info(len(codes))
+
+    logging.info('input nets api data number: %s' % len(codes))
 
     if len(codes) > 1010:
         raise ValueError('Too many code input: %s' % len(codes))
@@ -31,77 +31,49 @@ def getnvalue(*codes):
         codelist.append(str(code))
 
     url = fronturl + ','.join(codelist) + backurl
-
-    with request.urlopen(url) as f:
-        data = f.read()
-
-    jdata = json.loads(data.decode('utf-8')[21:-2])
+    with aiohttp.Timeout(10):
+        async with sessions.get(url) as response:
+            results.append(await response.text())
 
 
-    return jdata
+# 通过网易代码获取网易api数据
+def getnvalue(*codes):
+    import asyncio
+    import aiohttp
+    import json
+    lcodes = list()
+    task = list()
+    result = list()
+    dictdata = dict()
+    for i in range(0, len(codes), 1000):
+        lcodes.append(codes[i:i + 1000])
+
+    loop = asyncio.get_event_loop()
+
+    with aiohttp.ClientSession(loop=loop) as session:
+        for ncodes in lcodes:
+            task.append(__asyncgetnvalue(session, result, *ncodes))
+        loop.run_until_complete(asyncio.wait(task))
+    for item in result:
+        logging.info('get the data number: %s' % len(json.loads(item[21:-2])))
+        dictdata.update(json.loads(item[21:-2]))
+    return dictdata
 
 
-def getvalue(*codes):
-    from urllib import request
-    fronturl = 'http://api.money.126.net/data/feed/'
-    backurl = ',money.api'
-    codelist = list()
-    logging.info(len(codes))
-
-    if len(codes) > 100:
-        raise ValueError('Too many code input: %s' % len(codes))
+# 通过标准代码获取网易代码
+def getncode(*codes):
+    listcode = list()
+    logging.info('input getnvalue data number: %s' % len(codes))
 
     for code in codes:
-        codelist = codelist + [str(x) + str(code) for x in range(10)]
-    url = fronturl + ','.join(codelist) + backurl
+        listcode = listcode + [str(x) + str(code) for x in range(10)]
 
-    with request.urlopen(url) as f:
-        data = f.read()
+    dictdata = getnvalue(*listcode)
+    dictcode = dict()
+    for key in dictdata:
+        dictcode[key[1:]] = key
 
-    data_proc = data.decode('utf-8')[21:-2]
-
-    return data_proc
-
-
-
-
-
-
-
-
-
-def getncode1(code):
-    from urllib import request
-
-    fronturl = 'http://api.money.126.net/data/feed/'
-    backurl = ',money.api'
-    codes = list()
-    if isinstance(code,int):
-        pass
-
-    if isinstance(code, (str, int)):
-        codes.append(code)
-        codes = tuple(codes)
-    elif isinstance(code, (list, tuple)):
-        codes = tuple(code)
-    logging.info(codes)
-
-       # ncodelist = [str(x) + code for x in range(10)]
-   # codestr = ','.join(ncodelist)
-  #  url = fronturl + codestr + backurl
-  #  with request.urlopen(url) as f:
-    #    return f.read()
-
-
-def getncodes(codes):
-    ncodes = list()
-    if isinstance(codes, (int, str)):
-        ncodes.append(getncode(codes))
-    elif isinstance(codes, (list, tuple)):
-        for code in codes:
-            if isinstance(code, (int, str)):
-                ncodes.append(getncode(code))
-    return tuple(ncodes)
+    return dictcode
 
 
 class TNets(object):
