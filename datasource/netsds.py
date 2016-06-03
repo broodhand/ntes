@@ -5,24 +5,46 @@ Created on Thu Mar 24 11:02:14 2016
 @author:Zhao Cheng
 """
 
-# 通过api获取网易数据
+# 通过api获取网易证券数据
 from datetime import datetime
 from datastructure import Cache
 from urllib import request
-import time
 import types
+import asyncio
+import aiohttp
+import json
+import time
 import logging
 logging.basicConfig(level=logging.INFO)
 
 
+# 生成所有可能代码,digit为代码位数,outtype为输出数据格式可以为list,tuple,generator
+def __codegenerator(digit, outtype='list'):
+    if isinstance(digit, int):
+        if outtype == 'list':
+            return [str(x).zfill(digit) for x in range(10 ** digit)]
+        if outtype == 'tuple':
+            return tuple([str(x).zfill(digit) for x in range(10 ** digit)])
+        if outtype == 'generator':
+            return (str(x).zfill(digit) for x in range(10 ** digit))
+
+
+# 对list进行切片
+def __codecut(code, slices=1000):
+    if isinstance(code, (list, tuple)):
+        lcodes = list()
+        for i in range(0, len(code), slices):
+            lcodes.append(code[i:i + slices])
+        return lcodes
+
+
 # 通过网易代码异步获取网易api数据，最大限制1000数据
-async def __asyncgetnvalue(sessions, results, *codes):
-    import aiohttp
+async def __asyncgetnvalue(sessions, future, *codes):
     fronturl = 'http://api.money.126.net/data/feed/'
     backurl = ',money.api'
     codelist = list()
 
-    logging.info('input nets api data number: %s' % len(codes))
+    logging.info('__asyncgetnvalue:Input data number %s' % len(codes))
 
     if len(codes) > 1010:
         raise ValueError('Too many code input: %s' % len(codes))
@@ -33,40 +55,103 @@ async def __asyncgetnvalue(sessions, results, *codes):
     url = fronturl + ','.join(codelist) + backurl
     with aiohttp.Timeout(10):
         async with sessions.get(url) as response:
-            results.append(await response.text())
+            future.set_result(await response.text())
 
 
-# 通过网易代码获取网易api数据
-def getnvalue(*codes):
-    import asyncio
-    import aiohttp
-    import json
-    lcodes = list()
+# 通过网易代码并发获取网易api数据
+def __getnvalue(*codes, slices=1000):
     task = list()
-    result = list()
     dictdata = dict()
-    for i in range(0, len(codes), 1000):
-        lcodes.append(codes[i:i + 1000])
-
+    futurelist = list()
     loop = asyncio.get_event_loop()
+    lcodes = __codecut(codes, slices=slices)
 
     with aiohttp.ClientSession(loop=loop) as session:
-        for ncodes in lcodes:
-            task.append(__asyncgetnvalue(session, result, *ncodes))
+        for index, ncodes in enumerate(lcodes):
+            futurelist.append(asyncio.Future())
+            task.append(asyncio.ensure_future(__asyncgetnvalue(session, futurelist[index], *ncodes)))
         loop.run_until_complete(asyncio.wait(task))
-    for item in result:
-        logging.info('get the data number: %s' % len(json.loads(item[21:-2])))
+
+    for future in futurelist:
+        item = future.result()
+        logging.info('getnvalue: Getting the data number %s' % len(json.loads(item[21:-2])))
         dictdata.update(json.loads(item[21:-2]))
+
+    logging.info('getnvalue: Total received data number %s' % len(dictdata))
     return dictdata
 
 
-# 通过标准代码获取网易代码
+# 不限数量网易代码并发获取网易api数据,不对错误穷举处理,curnum 为最大并发数, slicesnum 为每协程切片数量 ,interval 为并发间隔
+def getnvalue(*codes, curnum=400, slicesnum=1000, interval=32):
+    import time
+    if slicesnum > 1000:
+        raise ValueError('The slicesnum must less than 1000: %s' % slicesnum)
+    result = dict()
+    errorlist = list()
+    listcode = __codecut(codes, slices=(slicesnum * curnum))
+
+    for index, codes in enumerate(listcode):
+        try:
+            r = __getnvalue(*codes)
+        except Exception as e:
+            logging.info(e)
+            errorlist += codes
+        else:
+            if isinstance(r, dict):
+                result.update(r)
+                logging.info('receive data: %s' % r)
+                logging.info('running %s / %s ,get %s data' % (index + 1, len(listcode), len(result)))
+            else:
+                errorlist += codes
+        if not (index + 1) == len(listcode):
+            time.sleep(interval)
+
+    return result, errorlist
+
+
+# 通过网易代码并发获取有效网易api数据,对错误穷举处理,curnum 为最大并发数,interval 为并发间隔
+def getvalue(*codes, curnum=400, interval=32):
+    import time
+    result = dict()
+    r_init = getnvalue(*codes, curnum=curnum, interval=interval)
+    result.update(r_init[0])
+    slicesnum = 100
+    while slicesnum > 0 and len(r_init[1]) > 0:
+        r_next = getnvalue(*r_init[1], curnum=curnum, slicesnum=slicesnum, interval=interval)
+        if len(r_next[0]) > 0:
+            result.update(r_next[0])
+            r_init = r_next
+        elif not len(r_next[1]) == len(r_init[1]):
+            r_init = r_next
+        else:
+            slicesnum //= 10
+        time.sleep(interval)
+    return result, r_init[1]
+
+
+# 获取有效网易代码
+def getcode(*codes, curnum=10, interval=60):
+    logging.info('getncode: Input data number %s' % len(codes))
+    data = getvalue(*codes, curnum=curnum, interval=interval)
+    dictdata = data[0]
+    listerror = data[1]
+    dictcode = dict()
+    for (k, v) in dictdata.items():
+        if isinstance(v, dict):
+            if v.get('symbol'):
+                dictcode[v.get('symbol')] = k
+            else:
+                listerror.append(k)
+    return dictcode, listerror
+
+
+# 通过标准六位代码获取有效网易代码
 def getncode(*codes):
     listcode = list()
-    logging.info('input getnvalue data number: %s' % len(codes))
+    logging.info('getncode: Input data number %s' % len(codes))
 
     for code in codes:
-        listcode = listcode + [str(x) + str(code) for x in range(10)]
+        listcode += [str(x) + str(code) for x in range(10)]
 
     dictdata = getnvalue(*listcode)
     dictcode = dict()
@@ -74,6 +159,28 @@ def getncode(*codes):
         dictcode[key[1:]] = key
 
     return dictcode
+
+
+# 通过标准六位代码切片list获得有效网易代码及错误解析代码
+def getcode_slices(codelist):
+    import time
+    result = dict()
+    errorlist = list()
+    for index, codes in enumerate(codelist):
+        try:
+            r = getncode(*codes)
+        except Exception as e:
+            logging.info(e)
+            errorlist.append(codes)
+        else:
+            if isinstance(r, dict):
+                result.update(r)
+            else:
+                errorlist.append(codes)
+        logging.info('receive data: %s' % r)
+        logging.info('running %s / %s ,get %s data' % (index+1, len(codelist), len(result)))
+        time.sleep(10)
+    return result, errorlist
 
 
 class TNets(object):
