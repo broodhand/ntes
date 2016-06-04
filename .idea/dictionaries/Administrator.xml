@@ -20,16 +20,20 @@
       <w>codelist</w>
       <w>codemap</w>
       <w>codestr</w>
+      <w>codestype</w>
       <w>concurrentrequests</w>
       <w>congetnvalue</w>
       <w>connectstr</w>
       <w>constr</w>
       <w>curnum</w>
       <w>datas</w>
+      <w>datatype</w>
+      <w>datatypelist</w>
       <w>dbsession</w>
       <w>dictcode</w>
       <w>dictdata</w>
       <w>dictdatas</w>
+      <w>digittype</w>
       <w>elasticsearch</w>
       <w>elasticsearchdb</w>
       <w>errorlist</w>
@@ -53,6 +57,9 @@
       <w>havedata</w>
       <w>initdata</w>
       <w>initvalue</w>
+      <w>itemlist</w>
+      <w>itemstype</w>
+      <w>itemtype</w>
       <w>jdata</w>
       <w>jstr</w>
       <w>lastproc</w>
@@ -73,6 +80,9 @@
       <w>newvalue</w>
       <w>nmax</w>
       <w>ntes</w>
+      <w>outputdatatype</w>
+      <w>outputformat</w>
+      <w>outputformattype</w>
       <w>outtype</w>
       <w>popdata</w>
       <w>proc</w>
