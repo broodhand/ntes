@@ -9,7 +9,6 @@ from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 import configparser
 
-
 class EsDB(object):
     def __init__(self, esindex, estype, esid=None, escfg='elasticsearchdb.cfg'):
         self.esindex = esindex
