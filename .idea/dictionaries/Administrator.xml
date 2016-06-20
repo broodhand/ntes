@@ -2,17 +2,26 @@
   <dictionary name="Administrator">
     <words>
       <w>asyncgetnvalue</w>
+      <w>attrdict</w>
+      <w>attridict</w>
       <w>backurl</w>
+      <w>basemodel</w>
       <w>bsession</w>
       <w>cachenum</w>
       <w>cacheseconds</w>
       <w>cachestream</w>
       <w>calback</w>
+      <w>cfgdatabase</w>
+      <w>cfgdriver</w>
       <w>cfgfile</w>
       <w>cfghost</w>
       <w>cfglist</w>
+      <w>cfgpassword</w>
       <w>cfgport</w>
+      <w>cfgtype</w>
+      <w>cfguser</w>
       <w>cheng</w>
+      <w>classname</w>
       <w>codcodeescut</w>
       <w>codecut</w>
       <w>codegenerator</w>
@@ -45,6 +54,8 @@
       <w>esindex</w>
       <w>estype</w>
       <w>fronturl</w>
+      <w>funcargs</w>
+      <w>funckwargs</w>
       <w>futurelist</w>
       <w>genertor</w>
       <w>getcodemax</w>
@@ -55,6 +66,7 @@
       <w>getnvalue</w>
       <w>getsession</w>
       <w>havedata</w>
+      <w>htmlbase</w>
       <w>initdata</w>
       <w>initvalue</w>
       <w>itemlist</w>
@@ -71,6 +83,8 @@
       <w>mapcode</w>
       <w>mappingcode</w>
       <w>maxdatanum</w>
+      <w>modelname</w>
+      <w>modulename</w>
       <w>mysqlconnector</w>
       <w>ncode</w>
       <w>ncodelist</w>
@@ -84,9 +98,11 @@
       <w>outputformat</w>
       <w>outputformattype</w>
       <w>outtype</w>
+      <w>packagename</w>
       <w>popdata</w>
       <w>proc</w>
       <w>proctime</w>
+      <w>projectname</w>
       <w>pulldata</w>
       <w>rediscallback</w>
       <w>rediscfg</w>
@@ -96,10 +112,16 @@
       <w>slicesnum</w>
       <w>spbgcapital</w>
       <w>sqlalchemy</w>
+      <w>sqlalchemycfg</w>
+      <w>sqlalchemydb</w>
+      <w>sqlalchemysession</w>
       <w>standcode</w>
+      <w>subnavigation</w>
       <w>tablename</w>
+      <w>testx</w>
       <w>tmpdata</w>
       <w>urllist</w>
+      <w>vaildargs</w>
       <w>zhao</w>
     </words>
   </dictionary>

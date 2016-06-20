@@ -16,9 +16,9 @@ class RedisDB(object):
         config = configparser.ConfigParser()
         with open(self.rediscfg, 'r') as cfgfile:
             config.read_file(cfgfile)
-            self.cfghost = config.get('SERVER', 'host')
-            self.cfgport = config.get('SERVER', 'port')
-            self.cfglist = config.get('SERVER', 'list')
+            self.cfghost = config.get('REDIS', 'host')
+            self.cfgport = config.get('REDIS', 'port')
+            self.cfglist = config.get('REDIS', 'list')
 
     def connect(self):
         pool = redis.ConnectionPool(host=self.cfghost, port=self.cfgport, db=0)

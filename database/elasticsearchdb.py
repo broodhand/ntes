@@ -9,6 +9,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 import configparser
 
+
 class EsDB(object):
     def __init__(self, esindex, estype, esid=None, escfg='elasticsearchdb.cfg'):
         self.esindex = esindex
@@ -18,8 +19,8 @@ class EsDB(object):
         config = configparser.ConfigParser()
         with open(self.escfg, 'r') as cfgfile:
             config.read_file(cfgfile)
-            self.cfghost = config.get('SERVER', 'host')
-            self.cfgport = config.get('SERVER', 'port')
+            self.cfghost = config.get('ELASTICSEARCH', 'host')
+            self.cfgport = config.get('ELASTICSEARCH', 'port')
         self.server = self.cfghost + ':' + self.cfgport
 
     def connect(self):
