@@ -37,10 +37,9 @@ class Website(object):
 app = Flask(__name__)  # 初始化Flask
 env = Environment(loader=PackageLoader('template', '/'))  # 初始化jinja2环境
 
-# 初始化jinjia2渲染参数对象
+# 初始化jinja2渲染参数对象
 session = SqlalchemyDB('website.cfg').getsession()  # 获取sqlalchemy的session
 web = Website(session)  # 初始化网页对象
-session.close
 
 
 @app.route('/', methods=['GET', 'POST'])

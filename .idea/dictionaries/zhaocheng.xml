@@ -2,7 +2,10 @@
   <dictionary name="zhaocheng">
     <words>
       <w>addr</w>
+      <w>funcname</w>
+      <w>jsondict</w>
       <w>paralist</w>
+      <w>renderpara</w>
       <w>spbg</w>
       <w>vaild</w>
       <w>varpara</w>
