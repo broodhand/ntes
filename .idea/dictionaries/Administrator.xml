@@ -68,14 +68,17 @@
       <w>getcls</w>
       <w>getcodemax</w>
       <w>getcodeslices</w>
+      <w>getcursor</w>
       <w>getinstance</w>
       <w>getncode</w>
       <w>getncodes</w>
       <w>getnvale</w>
       <w>getnvalue</w>
+      <w>getrenderpara</w>
       <w>getsession</w>
       <w>gettablename</w>
       <w>havedata</w>
+      <w>homepara</w>
       <w>htmlbase</w>
       <w>initdata</w>
       <w>initvalue</w>
@@ -98,6 +101,7 @@
       <w>modulename</w>
       <w>myobj</w>
       <w>mysqlconnector</w>
+      <w>mysqldb</w>
       <w>ncode</w>
       <w>ncodelist</w>
       <w>ncodes</w>
@@ -123,6 +127,7 @@
       <w>redisconfig</w>
       <w>redisdb</w>
       <w>renderkw</w>
+      <w>renderparar</w>
       <w>scode</w>
       <w>slicesnum</w>
       <w>spbgcapital</w>

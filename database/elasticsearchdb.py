@@ -8,16 +8,12 @@ Created on Thu Mar 24 14:24:10 2016
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 import configparser
-
+__action = list()
 
 class EsDB(object):
-    def __init__(self, esindex, estype, esid=None, escfg='elasticsearchdb.cfg'):
-        self.esindex = esindex
-        self.estype = estype
-        self.escfg = escfg
-        self.esid = esid
+    def __init__(self, escfg='elasticsearchdb.cfg'):
         config = configparser.ConfigParser()
-        with open(self.escfg, 'r') as cfgfile:
+        with open(escfg, 'r') as cfgfile:
             config.read_file(cfgfile)
             self.cfghost = config.get('ELASTICSEARCH', 'host')
             self.cfgport = config.get('ELASTICSEARCH', 'port')
@@ -26,14 +22,13 @@ class EsDB(object):
     def connect(self):
         return Elasticsearch(self.server)
 
-    def put(self, esdatas):
+    def put(self, esindex, estype, esid, esdatas):
         es = self.connect()
-        actions = []
-        for data in esdatas:
+        global  __action
             if self.esid is not None:
-                action = {"_index": self.esindex,
-                          "_type": self.estype,
-                          "_id": self.esid,
+                action = {"_index": esindex,
+                          "_type": estype,
+                          "_id": esid,
                           "_source": data
                           }
             else:
