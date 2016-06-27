@@ -43,6 +43,7 @@ def home():
     view = template.render(**renderpara)
     return view
 
+
 if __name__ == '__main__':
     app.run()
 
