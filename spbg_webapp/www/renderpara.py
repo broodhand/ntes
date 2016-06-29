@@ -9,7 +9,7 @@ Created on 6/23/16 2:06 PM
 """
 import logging; logging.basicConfig(level=logging.INFO)
 import json
-from database.mysqldb import create_pool, select
+from db.mysqldb import create_pool, select
 
 homepara = {'navigation': [{'caption': '简介', 'href': '/project'},
   {'caption': '业务', 'href': '/business'},

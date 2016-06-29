@@ -4,6 +4,7 @@
       <w>asyncgetnvalue</w>
       <w>attrdict</w>
       <w>attridict</w>
+      <w>attrs</w>
       <w>backurl</w>
       <w>basemodel</w>
       <w>bsession</w>
@@ -77,6 +78,7 @@
       <w>getrenderpara</w>
       <w>getsession</w>
       <w>gettablename</w>
+      <w>grandet</w>
       <w>havedata</w>
       <w>homepara</w>
       <w>htmlbase</w>
@@ -141,6 +143,7 @@
       <w>tablename</w>
       <w>testx</w>
       <w>tmpdata</w>
+      <w>updatable</w>
       <w>urllist</w>
       <w>vaildargs</w>
       <w>viewname</w>

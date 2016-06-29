@@ -25,8 +25,8 @@ def create_pool(file='mysqldb.cfg'):
             host = config.get('MYSQL', 'host')
             user = config.get('MYSQL', 'user')
             password = config.get('MYSQL', 'password')
-            database = config.get('MYSQL', 'database')
-            constr = {'host': host, 'user': user, 'password': password, 'database': database}
+            database = config.get('MYSQL', 'db')
+            constr = {'host': host, 'user': user, 'password': password, 'db': database}
             __pool = mysql.connector.connect(**constr)
 
 

@@ -13,7 +13,7 @@ Created on 2016/6/15 22:52
 import logging
 from flask import Flask
 from jinja2 import Environment, PackageLoader
-from database.sqlalchemydb import SqlalchemyDB
+from db.sqlalchemydb import SqlalchemyDB
 from spbg_webapp.www.orm import *
 
 logging.basicConfig(level=logging.INFO)

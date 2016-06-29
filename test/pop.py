@@ -5,7 +5,7 @@ Created on Thu Mar 24 11:02:14 2016
 @author:Zhao Cheng
 """
 
-import database
+import db
 data = []
 
 
@@ -17,5 +17,5 @@ def callback(dictdata):
             print(data.pop())
     return None
 
-redis = database.RedisDB()
+redis = db.RedisDB()
 redis.pop_stream(callback_func=callback)

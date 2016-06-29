@@ -17,7 +17,7 @@ class SqlalchemyDB(object):
             config.read_file(cfgfile)
             self.cfghost = config.get('SQLALCHEMY', 'host')
             self.cfgport = config.get('SQLALCHEMY', 'port')
-            self.cfgdatabase = config.get('SQLALCHEMY', 'database')
+            self.cfgdatabase = config.get('SQLALCHEMY', 'db')
             self.cfguser = config.get('SQLALCHEMY', 'user')
             self.cfgpassword = config.get('SQLALCHEMY', 'password')
             self.cfgtype = config.get('SQLALCHEMY', 'type')

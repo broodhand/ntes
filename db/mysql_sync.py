@@ -5,7 +5,7 @@ Created on 2016/6/25 16:18
 
 @project: Grandet
 @version: 0.99
-@file: mysqldb_new.py.py
+@file: mysql_sync.py.py
 @author: SPBG Co.,Ltd. ing / 北京正民惠浩投资管理有限公司 ing
 @contact: ing@spbgcapital.com
 @site: http://www.spbgcapital.net
@@ -15,7 +15,7 @@ import functools
 import threading
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 engine = None
 
@@ -28,7 +28,7 @@ def _profiling(start, sql=''):
         logging.info('[PROFILING] [MYSQL] %s: %s' % (t, sql))
 
 
-def create_engine(user, password, database, host='127.0.0.1', port=3306, **kw):
+def _create_engine(user, password, database, host='127.0.0.1', port=3306, **kw):
     import mysql.connector
     global engine
     if engine is not None:
@@ -43,9 +43,26 @@ def create_engine(user, password, database, host='127.0.0.1', port=3306, **kw):
     logging.info('Init mysql engine <%s> ok.' % hex(id(engine)))
 
 
-def use_cfgfile(func):
-    @functools.wraps(func)
-    def _wrapper(*args, **kw):
+def close_engine():
+    global engine
+    engine = None
+
+
+def create_engine(user, password, database, host='127.0.0.1', port=3306, **kw):
+    _create_engine(user, password, database, host, port, **kw)
+
+
+def create_engine_cfgfile(file='mysql_sync.cfg'):
+    import configparser
+    config = configparser.ConfigParser()
+    with open(file, 'r') as cfgfile:
+        config.read_file(cfgfile)
+        host = config.get('MYSQL', 'host')
+        user = config.get('MYSQL', 'user')
+        password = config.get('MYSQL', 'password')
+        database = config.get('MYSQL', 'database')
+        port = config.get('MYSQL', 'port')
+    _create_engine(user, password, database, host, port)
 
 
 def connection():
@@ -70,21 +87,28 @@ def with_transaction(func):
        比如:
            @with_transaction
            def do_in_transaction():
-       >>> @with_transaction
-       ... def update_profile(id, name, rollback):
-       ...     u = dict(id=id, name=name, email='%s@test.org' % name, passwd=name, last_modified=time.time())
-       ...     insert('user', **u)
-       ...     update('update user set passwd=? where id=?', name.upper(), id)
-       ...     if rollback:
-       ...         raise StandardError('will cause rollback...')
-       >>> update_profile(8080, 'Julia', False)
-       >>> select_one('select * from user where id=?', 8080).passwd
-       'JULIA'
-       >>> update_profile(9090, 'Robert', True)
-       Traceback (most recent call last):
+        >>> close_engine()
+        >>> create_engine_cfgfile()
+        >>> update('drop table if exists user')
+        0
+        >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
+        0
+        >>> @with_transaction
+        ... def update_profile(id, name, rollback):
+        ...     u = dict(id=id, name=name, email='%s@test.org' % name, passwd=name, last_modified=time.time())
+        ...     insert('user', **u)
+        ...     update('update user set passwd=? where id=?', name.upper(), id)
+        ...     if rollback:
+        ...         raise StandardError('will cause rollback...')
+        >>> update_profile(8080, 'Julia', False)
+        >>> select_one('select * from user where id=?', 8080).passwd
+        'JULIA'
+        >>> update_profile(9090, 'Robert', True) #doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
          ...
-       StandardError: will cause rollback...
-       """
+        mysql_sync.StandardError: will cause rollback...
+        """
+
     @functools.wraps(func)
     def _wrapper(*args, **kw):
         start = time.time()
@@ -123,6 +147,12 @@ def select_one(sql, *args):
     如果没有结果 返回None
     如果有1个结果，返回一个结果
     如果有多个结果，返回第一个结果
+    >>> close_engine()
+    >>> create_engine_cfgfile()
+    >>> update('drop table if exists user')
+    0
+    >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
+    0
     >>> u1 = dict(id=100, name='Alice', email='alice@test.org', passwd='ABC-12345', last_modified=time.time())
     >>> u2 = dict(id=101, name='Sarah', email='sarah@test.org', passwd='ABC-12345', last_modified=time.time())
     >>> insert('user', **u1)
@@ -144,6 +174,12 @@ def select_int(sql, *args):
     """
     执行一个sql 返回一个数值，
     注意仅一个数值，如果返回多个数值将触发异常
+    >>> close_engine()
+    >>> create_engine_cfgfile()
+    >>> update('drop table if exists user')
+    0
+    >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
+    0
     >>> u1 = dict(id=96900, name='Ada', email='ada@test.org', passwd='A-12345', last_modified=time.time())
     >>> u2 = dict(id=96901, name='Adam', email='adam@test.org', passwd='A-12345', last_modified=time.time())
     >>> insert('user', **u1)
@@ -151,17 +187,17 @@ def select_int(sql, *args):
     >>> insert('user', **u2)
     1
     >>> select_int('select count(*) from user')
-    5
+    2
     >>> select_int('select count(*) from user where email=?', 'ada@test.org')
     1
     >>> select_int('select count(*) from user where email=?', 'notexist@test.org')
     0
     >>> select_int('select id from user where email=?', 'ada@test.org')
     96900
-    >>> select_int('select id, name from user where email=?', 'ada@test.org')
+    >>> select_int('select id, name from user where email=?', 'ada@test.org') #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
-    MultiColumnsError: Expect only one column.
+    mysql_sync.MultiColumnsError: Expect only one column.
     """
     d = _select(sql, True, *args)
     if len(d) != 1:
@@ -172,6 +208,12 @@ def select_int(sql, *args):
 def select(sql, *args):
     """
     执行sql 以列表形式返回结果
+    >>> close_engine()
+    >>> create_engine_cfgfile()
+    >>> update('drop table if exists user')
+    0
+    >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
+    0
     >>> u1 = dict(id=200, name='Wall.E', email='wall.e@test.org', passwd='back-to-earth', last_modified=time.time())
     >>> u2 = dict(id=201, name='Eva', email='eva@test.org', passwd='back-to-earth', last_modified=time.time())
     >>> insert('user', **u1)
@@ -215,6 +257,12 @@ def _update(sql, *args):
 def update(sql, *args):
     """
     执行update 语句，返回update的行数
+    >>> close_engine()
+    >>> create_engine_cfgfile()
+    >>> update('drop table if exists user')
+    0
+    >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
+    0
     >>> u1 = dict(id=1000, name='Michael', email='michael@test.org', passwd='123456', last_modified=time.time())
     >>> insert('user', **u1)
     1
@@ -239,6 +287,12 @@ def update(sql, *args):
 def insert(table, **kw):
     """
     执行insert语句
+    >>> close_engine()
+    >>> create_engine_cfgfile()
+    >>> update('drop table if exists user')
+    0
+    >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
+    0
     >>> u1 = dict(id=2000, name='Bob', email='bob@test.org', passwd='bobobob', last_modified=time.time())
     >>> insert('user', **u1)
     1
@@ -399,9 +453,5 @@ class _TransactionCtx(object):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    create_engine('spbgcapital', '@Tnt7891011', 'spbgcapital', '192.168.1.160')
-    update('drop table if exists user')
-    update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
     import doctest
     doctest.testmod()

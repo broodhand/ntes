@@ -1,4 +1,4 @@
-from database.sqlalchemydb import SqlalchemyDB
+from db.sqlalchemydb import SqlalchemyDB
 import os
 
 path = os.getcwd()
