@@ -11,10 +11,11 @@ Created on 2016/6/15 22:52
 @site: http://www.spbgcapital.com
 """
 import logging
+
 from flask import Flask
 from jinja2 import Environment, PackageLoader
-from db.sqlalchemydb import SqlalchemyDB
-from spbg_webapp.www.orm import *
+
+from db.mysqldb.backup.sqlalchemydb import SqlalchemyDB
 
 logging.basicConfig(level=logging.INFO)
 

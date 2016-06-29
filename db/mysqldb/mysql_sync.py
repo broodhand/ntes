@@ -52,7 +52,7 @@ def create_engine(user, password, database, host='127.0.0.1', port=3306, **kw):
     _create_engine(user, password, database, host, port, **kw)
 
 
-def create_engine_cfgfile(file='mysql_sync.cfg'):
+def create_engine_file(file='mysql_sync.cfg'):
     import configparser
     config = configparser.ConfigParser()
     with open(file, 'r') as cfgfile:
