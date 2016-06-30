@@ -1,4 +1,4 @@
-import sqlalchemy
-import sqlalchemy.orm
-import sqlalchemy.ext.declarative
+from test.test5 import test
+
+print(test())
 

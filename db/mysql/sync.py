@@ -52,8 +52,9 @@ def create_engine(user, password, database, host='127.0.0.1', port=3306, **kw):
     _create_engine(user, password, database, host, port, **kw)
 
 
-def create_engine_file(file='mysql_sync.cfg'):
+def create_engine_cfgfile(file='sync.cfg'):
     import configparser
+
     config = configparser.ConfigParser()
     with open(file, 'r') as cfgfile:
         config.read_file(cfgfile)
@@ -106,7 +107,7 @@ def with_transaction(func):
         >>> update_profile(9090, 'Robert', True) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
          ...
-        mysql_sync.StandardError: will cause rollback...
+        sync.StandardError: will cause rollback...
         """
 
     @functools.wraps(func)
@@ -197,7 +198,7 @@ def select_int(sql, *args):
     >>> select_int('select id, name from user where email=?', 'ada@test.org') #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
-    mysql_sync.MultiColumnsError: Expect only one column.
+    sync.MultiColumnsError: Expect only one column.
     """
     d = _select(sql, True, *args)
     if len(d) != 1:

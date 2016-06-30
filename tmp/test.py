@@ -1,6 +1,6 @@
-from db.mysqldb import mysql_sync
+from db.mysqldb import sync
 
-mysql_sync.create_engine_cfgfile('../db/mysql_sync.cfg')
+sync.create_engine_cfgfile('../db/mysql_sync.cfg')
 t = dict(name='zhaocheng')
-r = mysql_sync.select_one('select * from test', )
+r = sync.select_one('select * from test', )
 print(r.name)

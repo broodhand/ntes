@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on 2016/6/17 13:11
+Created on 2016/6/30 8:44
 
 @project: Grandet
 @version: 0.99
-@file: test.py
+@file: test get_module.py.py
 @author: SPBG Co.,Ltd. ing / 北京正民惠浩投资管理有限公司 ing
 @contact: ing@spbgcapital.com
 @site: http://www.spbgcapital.net
 """
+from base.get_module import get_module
 
 
-def test():
-    return __file__
-
+print(get_module())
