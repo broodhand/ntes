@@ -10,8 +10,3 @@ Created on 2016/6/17 13:11
 @contact: ing@spbgcapital.com
 @site: http://www.spbgcapital.net
 """
-
-
-def test():
-    return __file__
-

@@ -79,14 +79,14 @@ class IntegerField(Field):
         if 'default' not in kw:
             kw['default'] = 0
         if 'ddl' not in kw:
-            kw['ddl'] = 'int'
+            kw['ddl'] = 'int(11)'
         super(IntegerField, self).__init__(**kw)
 
 
 class FloatField(Field):
     def __init__(self, **kw):
         if 'default' not in kw:
-            kw['default'] = 0
+            kw['default'] = 0.0
         if 'ddl' not in kw:
             kw['ddl'] = 'double'
         super(FloatField, self).__init__(**kw)
@@ -126,13 +126,6 @@ class BlobField(Field):
         if 'ddl' not in kw:
             kw['ddl'] = 'blob'
         super(BlobField, self).__init__(**kw)
-
-
-class DatetimeField(Field):
-    def __init__(self, **kw):
-        if 'ddl' not in kw:
-            kw['ddl'] = 'timestamp'
-        super(DatetimeField, self).__init__(**kw)
 
 
 class VersionField(Field):
@@ -232,7 +225,7 @@ class Model(dict, metaclass=ModelMetaclass):
     >>> print(User().__sql__())
     -- generating SQL for user:
     create table `user` (
-      `id` int not null,
+      `id` int(11) not null,
       `name` varchar(255) not null,
       `email` varchar(255) not null,
       `passwd` varchar(255) not null,
