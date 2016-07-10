@@ -80,7 +80,8 @@ def delete(index_name, doc_type, doc_id):
 
 
 @with_connection
-def update()
+def update():
+    pass
 
 
 @with_connection
@@ -106,7 +107,7 @@ class _Engine(object):
     def __init__(self, url, **kw):
         self.url = url
         self.kw = kw
-        self.client = lambda :Elasticsearch(self.url, **self.kw)
+        self.client = lambda: Elasticsearch(self.url, **self.kw)
 
 
 class _Es(object):

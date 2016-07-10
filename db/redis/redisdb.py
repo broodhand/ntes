@@ -11,7 +11,7 @@ import json
 
 
 class RedisDB(object):
-    def __init__(self, rediscfg='/redisdb.cfg'):
+    def __init__(self, rediscfg='redisdb.cfg'):
         self.rediscfg = rediscfg
         config = configparser.ConfigParser()
         with open(self.rediscfg, 'r') as cfgfile:
