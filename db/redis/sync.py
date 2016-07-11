@@ -51,7 +51,10 @@ def with_connection(func):
 @with_connection
 def rpush(listname, msg):
     global _db_ctx
-    _db_ctx.client.rpush(listname, msg)
+    if isinstance(msg, str):
+        _db_ctx.client.rpush(listname, msg)
+    elif isinstance(msg, (tuple,list)):
+        _db_ctx.client.rpush(listname, *msg)
     logging.debug('rpush to %s:\n %s' % (listname, msg))
 
 

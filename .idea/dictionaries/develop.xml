@@ -3,6 +3,7 @@
     <words>
       <w>connectionctx</w>
       <w>connectpool</w>
+      <w>dicttojson</w>
       <w>listname</w>
       <w>rpush</w>
     </words>
