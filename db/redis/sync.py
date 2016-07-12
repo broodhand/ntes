@@ -10,6 +10,7 @@ import threading
 import functools
 
 connection = None
+logstash_list = None
 
 
 def _create_connection(host, port, db):
@@ -58,7 +59,40 @@ def rpush(listname, msg):
     logging.debug('rpush to %s:\n %s' % (listname, msg))
 
 
+def _logstash(listname):
+    global logstash_list
+    if logstash_list is not None:
+        raise LogstashError('Already set up Logstash')
+    else:
+        logstash_list = listname
+
+
+def setup_logstash(listname='logstash-list'):
+    _logstash(listname)
+
+
+def configfile_logstash(file='sync.cfg'):
+    import configparser
+    config = configparser.ConfigParser()
+    with open(file, 'r') as cfgfile:
+        config.read_file(cfgfile)
+    listname = config.get('LOGSTASH', 'list')
+    _logstash(listname)
+
+
+def log(msg):
+    global logstash_list
+    if logstash_list is not None:
+        rpush(logstash_list, msg)
+    else:
+        raise LogstashError('Need to setup Logstash')
+
+
 class DBError(Exception):
+    pass
+
+
+class LogstashError(Exception):
     pass
 
 
@@ -80,9 +114,8 @@ class _DbCtx(threading.local):
 
     def init(self):
         global connection
-        info = connection.client.info()
         logging.info('open redis client...')
-        logging.debug('redis server\'s info:\n %s' % info)
+        # logging.debug('redis server\'s info:\n %s' % connection.client.info())
         self.client = connection.client
 
     def cleanup(self):

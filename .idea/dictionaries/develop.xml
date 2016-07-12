@@ -1,10 +1,14 @@
 <component name="ProjectDictionaryState">
   <dictionary name="develop">
     <words>
+      <w>clientctx</w>
       <w>connectionctx</w>
       <w>connectpool</w>
+      <w>dbnum</w>
       <w>dicttojson</w>
       <w>listname</w>
+      <w>logstash</w>
+      <w>poollist</w>
       <w>rpush</w>
     </words>
   </dictionary>
