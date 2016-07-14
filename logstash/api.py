@@ -45,7 +45,7 @@ def _log(msg):
     Push message to the redis list which logstash used.
     Using redisAPI.with_redis to Auto connect redis.
     :param msg: json string or json string's list
-    :return: True(Success)
+    :return: Result of rpush(the item number in the list)
     """
     global _loglist
     return redisAPI.rpush(_loglist, msg)
@@ -56,7 +56,7 @@ def log(msg):
     Verify that data is fit for logstash.
     Auto convert python object to json string or json string's list
     :param msg: dict, list, tuple object which push to logstash
-    :return: True(Success)
+    :return: Result of rpush(the item number in the list)
     """
     if isinstance(msg, dict):
         if _vaild_dict(msg):
@@ -74,7 +74,7 @@ def _push(msg):
     Not to auto connect the redis.
     Can use 'with redisAPI.redis_connection():' to push many datas,but connect the redis once.
     :param msg: json string or json string's list
-    :return: True(Success)
+    :return: Result of rpush(the item number in the list)
     """
     global _loglist
     return redisAPI.rpush(_loglist, msg)
@@ -85,7 +85,7 @@ def push(msg):
     Verify that data is fit for logstash.Not to auto connect redis.
     Auto convert python object to json string or json string's list
     :param msg: dict, list, tuple object which push to logstash
-    :return: True(Success)
+    :return: Result of rpush(the item number in the list)
     """
     if isinstance(msg, dict):
         if _vaild_dict(msg):

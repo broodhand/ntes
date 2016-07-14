@@ -114,8 +114,8 @@ class _DbCtx(threading.local):
 
     def init(self):
         global connection
-        logging.info('open redis client...')
-        # logging.debug('redis server\'s info:\n %s' % connection.client.info())
+        logging.info('open redis redis...')
+        # logging.debug('redis server\'s info:\n %s' % connection.redis.info())
         self.client = connection.client
 
     def cleanup(self):

@@ -31,14 +31,12 @@ def rpush(listname, msg, redis_client=None):
     :param redis_client: redis redis from module redis method get_client.
     :param listname:redis list name
     :param msg: rpush message to redis
-    :return: True(Success)
+    :return: Result of rpush(the item number in the list)
     """
     if isinstance(msg, str):
-        redis_client.rpush(listname, msg)
+        return redis_client.rpush(listname, msg)
     elif isinstance(msg, (tuple, list)):
-        redis_client.rpush(listname, *msg)
+        return redis_client.rpush(listname, *msg)
     else:
         raise ValueError('Must be str or list')
-    logging.debug('rpush to %s:\n %s' % (listname, msg))
-    return True
 

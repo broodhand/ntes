@@ -138,13 +138,13 @@ class _Es(object):
         if self.client and (len(self.actions) > 0):
             helpers.bulk(self.client, self.actions)
         else:
-            raise _EsError('commit:_Es have no client or actions = 0')
+            raise _EsError('commit:_Es have no redis or actions = 0')
 
     def parallel_bulk(self,thread_count=4):
         if self.client and (len(self.actions) > 0):
             helpers.parallel_bulk(self.client, self.actions, thread_count)
         else:
-            raise _EsError('commit:_Es have no client or actions = 0')
+            raise _EsError('commit:_Es have no redis or actions = 0')
 
     def init_actions(self):
         self.actions = []

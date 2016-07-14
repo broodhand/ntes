@@ -2,7 +2,7 @@ from .client import (create_client, select_db, close_client, set_config, set_tim
                      redis_client)
 from .api import rpush
 
-__version__ = '0.0.3'
+__version__ = '0.1.0'
 VERSION = tuple(map(int, __version__.split('.')))
 
 __all__ = ['create_client', 'select_db', 'close_pool', 'set_config', 'set_timeout', 'rpush', 'have_client',

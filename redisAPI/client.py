@@ -144,7 +144,7 @@ class _Redis(threading.local):
         self.kwargs = self.default.copy()
         self.kwargs.update(kwargs)
         self.pool = redis.ConnectionPool(**self.kwargs)
-        self.redis = redis.StrictRedis(self.pool)
+        self.redis = redis.StrictRedis(connection_pool=self.pool)
 
     def set_config(self, **config):
         "Set the kwarg which pass to the Class redis.ConnectionPool"
@@ -152,8 +152,7 @@ class _Redis(threading.local):
             self.pool.disconnect()
             self.kwargs.update(config)
         self.pool = redis.ConnectionPool(**self.kwargs)
-        self.redis = redis.StrictRedis(self.pool)
-        logging.debug('set config %s' % config)
+        self.redis = redis.StrictRedis(connection_pool=self.pool)
         return True
 
     def close(self):
@@ -163,7 +162,6 @@ class _Redis(threading.local):
         self.pool = None
         self.redis = None
         self.kwargs = self.default.copy()
-        logging.debug('close pool')
         return True
 
 
