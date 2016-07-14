@@ -1,6 +1,3 @@
-class PoolError(Exception):
+class RedisError(Exception):
     pass
 
-
-class ClientError(Exception):
-    pass
