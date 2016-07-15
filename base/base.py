@@ -106,3 +106,20 @@ def process_varpara(para):
                     yield data
             elif isinstance(item, (int, str)):
                 yield item
+
+
+def merge(x, y):
+    """
+    merge x and y .
+    :param x: must be dict
+    :param y: must be dict
+    :return: dict
+    """
+    for k, v in y.items():
+        if not isinstance(v, dict):
+            x[k] = v
+        else:
+            if k in x.keys():
+                merge(x[k], v)
+            else:
+                x[k] = v
