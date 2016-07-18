@@ -7,7 +7,9 @@ Created on 2016/6/16 11:07
 @contact: ing@spbgcapital.com
 @site: http://www.spbgcapital.net
 """
-from .base import merge
+from .tools import merge, cut_seq
 
 __version__ = '0.1.0'
 VERSION = tuple(map(int, __version__.split('.')))
+
+__all__=['merge', 'cut_seq']

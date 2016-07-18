@@ -2,16 +2,17 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-
+__version__ = '0.1.0'
 Create logstash API to use the logstash which pass the data from redis to elasticsearch.
 """
 import logging; logging.basicConfig(level=logging.DEBUG)
+import redis
 import redisAPI
 import json
 from . import config
 
-_rediscfg = config.rediscfg  # Get config from config.py
-_loglist = config.logstashlist  # Get redis list key name for logstash
+rediscfg = config.logstash['redisAPI_config'] # Get config from config.py
+loglist = config.logstash['logstash_listname']  # Get redis list key name for logstash
 
 
 def _vaild_dict(dictmsg):
@@ -39,16 +40,15 @@ def _vaild_list(listmsg):
     return True
 
 
-@redisAPI.with_redis(**_rediscfg)
-def _log(msg):
+@redisAPI.with_connection(**rediscfg)
+def _log(msg, client=None, keyname=loglist):
     """
     Push message to the redis list which logstash used.
-    Using redisAPI.with_redis to Auto connect redis.
+    Using redisDB.with_connection to Auto connect redis and pass client to _log()
     :param msg: json string or json string's list
     :return: Result of rpush(the item number in the list)
     """
-    global _loglist
-    return redisAPI.rpush(_loglist, msg)
+    return client.rpush(keyname, msg)
 
 
 def log(msg):
@@ -66,34 +66,38 @@ def log(msg):
         if _vaild_list(msg):
             msgjson = tuple(map(json.dumps, msg))
             return _log(msgjson)
+    else:
+        raise ValueError('log(msg) msg must be dict,list and tuple')
 
 
-def _push(msg):
+def _push(msg, client, keyname=loglist):
     """
     Push message to the redis list which the logstash used.
     Not to auto connect the redis.
-    Can use 'with redisAPI.redis_connection():' to push many datas,but connect the redis once.
+    Can use 'with redisDB.redis_connection() as :' to push many datas,but connect the redis once.
     :param msg: json string or json string's list
     :return: Result of rpush(the item number in the list)
     """
-    global _loglist
-    return redisAPI.rpush(_loglist, msg)
+    if not isinstance(client, redis.StrictRedis):
+        raise eredis.RedisError('Must use "with redisDB.connection(rediscfg)"')
+    return client.rpush(keyname, msg)
 
 
-def push(msg):
+def push(msg, client):
     """
     Verify that data is fit for logstash.Not to auto connect redis.
     Auto convert python object to json string or json string's list
+    :param client: redis.StrictRedis or redis.Redis instance
     :param msg: dict, list, tuple object which push to logstash
     :return: Result of rpush(the item number in the list)
     """
     if isinstance(msg, dict):
         if _vaild_dict(msg):
             msgjson = json.dumps(msg)
-            return _push(msgjson)
+            return _push(msgjson, client)
     if isinstance(msg, (list, tuple)):
         if _vaild_list(msg):
             msgjson = tuple(map(json.dumps, msg))
-            return _push(msgjson)
-
-
+            return _push(msgjson, client)
+    else:
+        raise ValueError('log(msg) msg must be dict,list and tuple')

@@ -10,18 +10,26 @@
       <w>dictmsg</w>
       <w>dicttojson</w>
       <w>functools</w>
+      <w>futuredict</w>
       <w>initctx</w>
+      <w>keepalive</w>
+      <w>keyname</w>
       <w>listmsg</w>
       <w>listname</w>
       <w>loglist</w>
       <w>logstash</w>
+      <w>logstashlist</w>
       <w>msgdict</w>
       <w>msgjson</w>
+      <w>myuuid</w>
       <w>poolcfg</w>
       <w>poollist</w>
       <w>redisctx</w>
       <w>redispool</w>
       <w>rpush</w>
+      <w>setconfig</w>
+      <w>statuscode</w>
+      <w>suris</w>
     </words>
   </dictionary>
 </component>

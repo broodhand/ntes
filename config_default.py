@@ -5,8 +5,9 @@ __version__ = '0.1.0'
 """
 
 logstash = {
-    'rediscfg': {
-        'socket_connect_timeout': 3
+    'redisAPI_config': {
+        'socket_connect_timeout': 3,
+        'db': 0
     },
-    'logstashlist': 'logstash-list'
+    'logstash_listname': 'logstash-list'
 }
