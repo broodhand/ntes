@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 Asynchronous getting the restful api datas
 """
 import logging; logging.basicConfig(level=logging.INFO)
@@ -14,8 +14,8 @@ import time
 namespace = uuid.uuid1()
 
 
-async def _fetch(session, future_content, url, timeout=1, callback_content=lambda self: logging.info(self),
-                 res_type='text', encoding='utf-8'):
+async def _fetch(session, future_content, url, timeout=1, log_content=lambda self: logging.info(self),
+                 filter_content=lambda self: self, res_type='text', encoding='utf-8'):
     "To asynchronous getting a url's data"
     choice = dict(text=lambda self: self.text(encoding=encoding),
                   json=lambda self: self.json(),
@@ -25,47 +25,45 @@ async def _fetch(session, future_content, url, timeout=1, callback_content=lambd
     global namespace
     uuid_name = '%s/%s' % (url, now_stamp)
     myuuid = uuid.uuid3(namespace, uuid_name).hex
+    set_result_fail = dict(url=url, status=408, time=now_stand, uuid=myuuid)
     try:
         with aiohttp.Timeout(timeout):
-
             try:
                 async with session.get(url) as res:
                     statuscode = res.status
                     content = await choice[res_type](res)
-                    logging.debug('get content:%s/status:%s' % (content, statuscode))
+                    set_content = filter_content(dict(content=content, uuid=myuuid))
+                    set_result_success = dict(url=url, status=statuscode, time=now_stand, uuid=myuuid)
                     if res.status == 200:
-                        future_content.set_result(
-                            dict(content=content, uuid=myuuid))
-                        callback_content(dict(content=content, uuid=myuuid))
-                        return dict(url=url, status=statuscode, time=now_stand, uuid=myuuid)
-                    else:
-                        return dict(url=url, status=statuscode, time=now_stand, uuid=myuuid)
+                        future_content.set_result(set_content)
+                        log_content(set_content)
+                    return set_result_success
             except aiohttp.errors.ClientOSError:
-                return dict(url=url, status=408, time=now_stand, uuid=myuuid)
-
+                return set_result_fail
     except asyncio.TimeoutError:
-        return dict(url=url, status=408, time=now_stand, uuid=myuuid)
+        return set_result_fail
 
 
-async def _retry(session, future_content, url, callback_result=lambda self: logging.info(self),
-                 retry_times=3, **kwargs):
+async def _retry(session, future_content, url, log_result=lambda self: logging.info(self),
+                 filter_result=lambda self: self, retry_times=3, **kwargs):
     "When encountered errors,Retry to get data"
     retry = 0
     result = dict()
     while retry <= retry_times:
-        logging.debug('retry time %s' % retry)
         result = await _fetch(session, future_content, url, **kwargs)
         status = result['status']
         if status == 200:
             result['retry'] = retry
-            callback_result(result)
-            return result
+            set_result = filter_result(result)
+            log_result(set_result)
+            return set_result
         else:
             retry += 1
     result['retry'] = retry
-    callback_result(result)
-    future_content.set_result(dict(content=None, uuid=result['uuid']))
-    return result
+    set_result = filter_result(result)
+    log_result(set_result)
+    future_content.set_result(kwargs['filter_content'](content=None, uuid=result['uuid']))
+    return set_result
 
 
 async def _semaphore(session, future, *urls, semaphore=20, **kwargs):
@@ -78,8 +76,7 @@ async def _semaphore(session, future, *urls, semaphore=20, **kwargs):
         future_content_list.append(future_content)
         with (await sem):
             result = await _retry(session, future_content, url, **kwargs)
-            if result['status'] != 200:
-                result_list.append(result)
+            result_list.append(result)
     future.set_result(future_content_list)
     return result_list
 
@@ -89,13 +86,15 @@ def get_urls(*urls, **kwargs):
     To asynchronous getting datas from restful api.
     :param urls: Input a url list for getting datas.
     :param :
-            timeout=1: the timeout of sessions
-            callback_content=lambda self: logging.info(self): callback function for getting content
-            res_type='text': type of data. 'text':str 'bytes':bytes 'json':auto using json encoder
-            encode='utf-8': the data's str code
-            callback_result=lambda self: logging.info(self): callback function for getting result log
             retry_times=3: retry times
             semaphore=20: The max sessions to connect servers at the same time.
+            timeout=1: the timeout of sessions
+            res_type='text': type of data. 'text':str 'bytes':bytes 'json':auto using json encoder
+            encode='utf-8': the data's str code
+            log_content=lambda self: logging.info(self): callback function for getting content
+            log_result=lambda self: logging.info(self): callback function for getting result log
+            filter_content=lambda self: self: To filter api get the data's content
+            filter_result=lambda self: self: To filter the result of getting data from api
     :return: A dict have key 'content_list' receiving API datas to a dict.
              It have Another key 'error_list' receiving error log to a dict.
              Content dict have the content of url and uuid for this time connect.
