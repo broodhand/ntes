@@ -79,7 +79,7 @@ def _push(msg, client, keyname=loglist):
     :return: Result of rpush(the item number in the list)
     """
     if not isinstance(client, redis.StrictRedis):
-        raise eredis.RedisError('Must use "with redisDB.connection(rediscfg)"')
+        raise redis.RedisError('Must use "with redisDB.connection(rediscfg)"')
     return client.rpush(keyname, msg)
 
 

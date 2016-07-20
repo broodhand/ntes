@@ -10,7 +10,7 @@ import base
 from collections import Iterator
 
 
-def make_ntes_url(*codes, codes_max=1000):
+def make_url(*codes, codes_max=1000):
     """
     To make the ntes api url address for restful input to ntes API
     """
@@ -37,7 +37,7 @@ def make_urls(codes, slices=1000):
     if isinstance(codes, (Iterator, list, tuple)):
         code_generator = base.cut_seq(codes, slices=slices)
         for code_tuple in code_generator:
-            yield make_ntes_url(*code_tuple, codes_max=slices)
+            yield make_url(*code_tuple, codes_max=slices)
     else:
         raise TypeError('Must input a generator,list or tuple')
 
