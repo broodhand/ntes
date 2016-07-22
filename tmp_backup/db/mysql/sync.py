@@ -154,8 +154,8 @@ def select_one(sql, *args):
     0
     >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
     0
-    >>> u1 = dict(id=100, name='Alice', email='alice@test.org', passwd='ABC-12345', last_modified=time.time())
-    >>> u2 = dict(id=101, name='Sarah', email='sarah@test.org', passwd='ABC-12345', last_modified=time.time())
+    >>> u1 = dict(id=100, name='Alice', email=tmp_test, passwd='ABC-12345', last_modified=time.time())
+    >>> u2 = dict(id=101, name='Sarah', email=tmp_test, passwd='ABC-12345', last_modified=time.time())
     >>> insert('user', **u1)
     1
     >>> insert('user', **u2)
@@ -294,7 +294,7 @@ def insert(table, **kw):
     0
     >>> update('create table user (id int primary key, name text, email text, passwd text, last_modified real)')
     0
-    >>> u1 = dict(id=2000, name='Bob', email='bob@test.org', passwd='bobobob', last_modified=time.time())
+    >>> u1 = dict(id=2000, name='Bob', email=tmp_test, passwd='bobobob', last_modified=time.time())
     >>> insert('user', **u1)
     1
     >>> u2 = select_one('select * from user where id=?', 2000)

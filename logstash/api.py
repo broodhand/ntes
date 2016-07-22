@@ -7,11 +7,11 @@ Create logstash API to use the logstash which pass the data from redis to elasti
 """
 import logging; logging.basicConfig(level=logging.DEBUG)
 import redis
-import redisAPI
+import redisDB
 import json
 from . import config
 
-rediscfg = config.logstash['redisAPI_config'] # Get config from config.py
+rediscfg = config.logstash['redisAPI_config']  # Get config from config.py
 loglist = config.logstash['logstash_listname']  # Get redis list key name for logstash
 
 
@@ -40,7 +40,7 @@ def _vaild_list(listmsg):
     return True
 
 
-@redisAPI.with_connection(**rediscfg)
+@redisDB.with_connection(**rediscfg)
 def _log(msg, client=None, keyname=loglist):
     """
     Push message to the redis list which logstash used.

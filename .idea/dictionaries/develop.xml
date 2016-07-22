@@ -1,24 +1,29 @@
 <component name="ProjectDictionaryState">
   <dictionary name="develop">
     <words>
+      <w>aiohttp</w>
       <w>checkdict</w>
       <w>clientctx</w>
       <w>connectionctx</w>
       <w>connectionpool</w>
       <w>connectpool</w>
       <w>dbnum</w>
+      <w>delkey</w>
       <w>dictmsg</w>
       <w>dicttojson</w>
       <w>functools</w>
       <w>futuredict</w>
       <w>initctx</w>
+      <w>ismember</w>
       <w>keepalive</w>
       <w>keyname</w>
+      <w>keytype</w>
       <w>listmsg</w>
       <w>listname</w>
       <w>loglist</w>
       <w>logstash</w>
       <w>logstashlist</w>
+      <w>memebers</w>
       <w>msgdict</w>
       <w>msgjson</w>
       <w>myuuid</w>
@@ -28,6 +33,9 @@
       <w>redispool</w>
       <w>rpush</w>
       <w>setconfig</w>
+      <w>sismember</w>
+      <w>sismembers</w>
+      <w>smembers</w>
       <w>statuscode</w>
       <w>suris</w>
     </words>

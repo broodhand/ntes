@@ -29,8 +29,8 @@ def get_all_data(**kwargs):
     try:
         result_list = get_data(codes_generator, **kwargs)
     except Exception:
-        logging.warning("<ntesAPI.api.get_all_data>  Call get_data error.")
-        raise ApiError("<ntesAPI.api.get_all_data>  Get all data failure")
+        logging.warning("<ntesDS.api.get_all_data>  Call get_data error.")
+        raise ApiError("<ntesDS.api.get_all_data>  Get all data failure")
     else:
         for result in result_list:
             for k in result.keys():

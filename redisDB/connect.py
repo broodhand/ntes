@@ -2,18 +2,23 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 This is a set of api library for using Class redis.ConnectionPool().
 """
 import redis
 import functools
 import threading
+from .error import RedisError
 
 
 def with_connection(**kwargs):
     """
     when func need args client,
-    We can use "@with_connection(**kwargs)" auto pass redis client to func
+    We can use "@with_connection(**kwargs)" auto pass redis client to func's kwarg client.
+    example:
+    @with_connection(db=1)
+    def redis_info(client=None):
+        return client.info()
     """
     def _decorator(func):
         @functools.wraps(func)
@@ -25,6 +30,23 @@ def with_connection(**kwargs):
     return _decorator
 
 
+def with_connect(func):
+    """
+    when func need arg client,
+    We can use "@with_connection" auto pass redis client to func's first arg.
+    example:
+    @with_connection
+    def redis_info(client,**kwarg):  # kwarg is redis.ConnectionPool's kwarg
+        return client.info()
+    """
+    @functools.wraps(func)
+    def _wrapper(*args, **kw):
+        with connection(**kw) as redis_connection:
+            client = redis_connection.client()
+            return func(client, *args)
+    return _wrapper
+
+
 class connection(threading.local):
     "This Class store redis.ConnectionPool() instance information."
     def __init__(self, **kwargs):
@@ -32,7 +54,7 @@ class connection(threading.local):
         self._default = dict(max_connections=None, host='localhost', port=6379, db=0, password=None,
                              socket_timeout=None, socket_connect_timeout=None, socket_keepalive=False,
                              socket_keepalive_options=None, retry_on_timeout=False, encoding='utf-8',
-                             encoding_errors='strict', decode_responses=False, socket_read_size=65536)
+                             encoding_errors='strict', decode_responses=True, socket_read_size=65536)
         self._kwargs = self._default.copy()
         self._kwargs.update(kwargs)
         self._pool = None
@@ -92,6 +114,3 @@ class connection(threading.local):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-
-class RedisError(Exception):
-    pass

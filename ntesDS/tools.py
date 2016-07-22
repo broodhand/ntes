@@ -17,7 +17,7 @@ def make_url(*codes, codes_max=1000):
     _fronturl = 'http://api.money.126.net/data/feed/'
     _backurl = ',money.api'
     _codelist = list()
-    logging.debug('<ntesAPI.tools.mak_ntes_url>Input code number %s' % len(codes))
+    logging.debug('<ntesDS.tools.mak_ntes_url>Input code number %s' % len(codes))
     if len(codes) == 0:
         raise ValueError('Must input code')
     if len(codes) > codes_max:
