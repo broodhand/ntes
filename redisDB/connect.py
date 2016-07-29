@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 This is a set of api library for using Class redis.ConnectionPool().
 """
 import redis
@@ -42,8 +42,8 @@ def with_connect(func):
     @functools.wraps(func)
     def _wrapper(*args, **kw):
         with connection(**kw) as redis_connection:
-            client = redis_connection.client()
-            return func(client, *args)
+            kw['client'] = redis_connection.client()
+            return func(*args, **kw)
     return _wrapper
 
 
