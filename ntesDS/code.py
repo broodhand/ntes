@@ -2,11 +2,10 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.1.1'
+__version__ = '0.2.0'
 Code lib
 """
 import logging; logging.basicConfig(level=logging.INFO)
-from .data import get_data
 
 
 def _generate_code(dit):
@@ -42,8 +41,6 @@ def sz_code_generator():
         yield '1' + code
 
 
-def of_data(scheme='default', timeout=3, semaphore=20, **kwargs):
-    return get_data(of_code_generator(), scheme=scheme, timeout=timeout, semaphore=semaphore, **kwargs)
 
 
 
