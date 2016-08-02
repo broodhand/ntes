@@ -13,7 +13,7 @@ from functools import reduce
 re_ntes = re.compile(r"_ntes_quote_callback\((?P<data>.*)\);")
 
 
-def _filer_vaild_content(content):
+def filer(content):
     """
     Call back function for the aiohttpAPI.get_urls to filer every piece of result content from the ntes api.
     :param content: The result input.It's a str like"_ntes_quote_callback({...})". "{...}" is the json str.
@@ -30,7 +30,7 @@ def _filer_vaild_content(content):
         return None
 
 
-def _callback_info_error(log):
+def callback(log):
     """
     Call back function for the aiohttpAPI.get_urls to log the content of every piece of result from the ntes api.
     :param log: Every result input for log.
@@ -40,7 +40,7 @@ def _callback_info_error(log):
         logging.warning(log)
 
 
-def _process_result_list_code(result_list):
+def process(result_list):
     """
     Call back function for precessing the result list.Get the single result for a code.
     :param result_list: The list of the every request's result.

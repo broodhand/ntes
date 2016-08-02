@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 Get the data of ntes
 """
 import logging;logging.basicConfig(level=logging.INFO)
@@ -46,4 +46,6 @@ def get_data(codes, scheme='default', **aiohttp_cfg):
 
 
 def of_data(scheme='default', timeout=3, semaphore=20, **kwargs):
-    return get_data(of_code_generator(), scheme=scheme, timeout=timeout, semaphore=semaphore, **kwargs)
+    result = get_data(of_code_generator(), scheme=scheme, timeout=timeout, semaphore=semaphore, **kwargs)
+    logging.info('<ntesDS.data.of_data> Getting %d data' % len(result))
+    return result
