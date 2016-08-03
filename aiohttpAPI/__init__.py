@@ -1,8 +1,6 @@
-from .client import (get_urls, get_url)
+from .client import (get_urls, get_url, Urls)
 
-__version__ = '0.3.1'
+__version__ = '0.4.0'
 VERSION = tuple(map(int, __version__.split('.')))
 
-__all__ = ['get_urls', 'get_url']
-
-
+__all__ = ['get_urls', 'get_url', 'Urls']
