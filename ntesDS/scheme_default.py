@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 Scheme default
 """
 import logging
@@ -19,13 +19,16 @@ def filer(content):
     :param content: The result input.It's a str like"_ntes_quote_callback({...})". "{...}" is the json str.
     :return: discard result which have no the "content" key or the "content" key have no content.
     """
-    if content['content'] is not None:
-        json_str = re_ntes.match(content['content']).group('data')
-        content_dict = json.loads(json_str)
-        if len(content_dict) == 0:
-            return None
+    if isinstance(content, dict):
+        if content.get('content') is not None:
+            json_str = re_ntes.match(content['content']).group('data')
+            content_dict = json.loads(json_str)
+            if len(content_dict) == 0:
+                return None
+            else:
+                return content_dict
         else:
-            return content_dict
+            return None
     else:
         return None
 
@@ -36,7 +39,10 @@ def callback(log):
     :param log: Every result input for log.
     :return: If the key "status" is 200,discard this piece of result.So only log error result
     """
-    if log['status'] != 200:
+    if isinstance(log, dict):
+        if log.get('status') != 200:
+            logging.warning(log)
+    else:
         logging.warning(log)
 
 
@@ -46,4 +52,7 @@ def process(result_list):
     :param result_list: The list of the every request's result.
     :return:The code's content list
     """
-    return reduce(lambda x, y: dict(x, **y), result_list)
+    if result_list:
+        return reduce(lambda x, y: dict(x, **y), result_list)
+    else:
+        return None
