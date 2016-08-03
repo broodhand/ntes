@@ -2,35 +2,33 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.5'
+__version__ = '0.0.7'
 Get the data of ntes
 """
 import logging
 import aiohttpAPI
 from .url import make_urls
-from .code import of_code_generator
 from .scheme_default import filer as filer_default
 from .scheme_default import callback as callback_default
 from .scheme_default import process as process_default
 
-
 scheme_dict = {
-    'default': {'filter': lambda x:  filer_default(x),
+    'default': {'filter': lambda x: filer_default(x),
                 'callback': lambda x: callback_default(x),
                 'process': lambda x: process_default(x)
                 }
 }
 
 
-def get_data(codes, scheme='default', **aiohttp_cfg):
+def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, retry_failure=3):
     """
     To get the stock data from the ntes api
     :param codes: Must input the codes list , tuple or generator
     :param scheme: the scheme for filter, callback, process
-    :param aiohttp_cfg: Pass to aiohttpAPI.get_urls,so the same with it.But default use the following callback function.
-                        filer: filter_function = _filer_vaild_content
-                        log: log_function = _log_info_error
-                        result process: proc_function = _process_result_list_code
+    :param timeout: the session's timeout
+    :param retry_session: the session retry time
+    :param semaphore: the asyncio number
+    :param retry_failure: failure retry times
     :return: The codes' data content list.
     """
     global scheme_dict
@@ -39,14 +37,16 @@ def get_data(codes, scheme='default', **aiohttp_cfg):
         callback = scheme_dict[scheme]['callback']
         process = scheme_dict[scheme]['process']
     except Exception as e:
-        logging.warning('<ntesDS.data> scheme name error')
-        raise ValueError(r'<ntesDS.data> scheme name error \r\n error: %s' % e)
-    return aiohttpAPI.get_urls(make_urls(codes), filter_function=filters, callback_function=callback,
-                               proc_function=process, **aiohttp_cfg)
+        logging.warning('<ntesDS.data> scheme name error %s' % e)
+        return False
 
-
-def of_data(scheme='default', timeout=3, semaphore=20, **kwargs):
-    result = get_data(of_code_generator(), scheme=scheme, timeout=timeout, semaphore=semaphore, **kwargs)
-    if isinstance(result, dict):
-        logging.info('<ntesDS.data.of_data> Getting %d data' % len(result[0]))
-    return result
+    try:
+        urls = make_urls(codes)
+        res = aiohttpAPI.Urls(urls, filter_function=filters, callback_function=callback, proc_function=process,
+                              res_type='text', encoding='utf-8', timeout=timeout, retry_session=retry_session,
+                              retry_failure=retry_failure, semaphore=semaphore)
+        result = res.get()
+        return result
+    except Exception as e:
+        logging.warning('<ntesDS.data> Getting data error %s' % e)
+        return False
