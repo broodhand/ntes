@@ -5,8 +5,10 @@ Created on Wed Mar 23 12:37:57 2016
 __version__ = '0.0.1'
 Code lib
 """
+import logging; logging.basicConfig(level=logging.INFO)
 from .code import of_code_generator, sh_code_generator, sz_code_generator
 from .error import CodeError
+from .data import get_data
 
 generator = {
     'OF': of_code_generator,
