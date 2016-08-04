@@ -2,10 +2,9 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 Scheme default
 """
-import logging
 import re
 import json
 from functools import reduce
@@ -31,19 +30,6 @@ def filer(content):
             return None
     else:
         return None
-
-
-def callback(log):
-    """
-    Call back function for the aiohttpAPI.get_urls to log the content of every piece of result from the ntes api.
-    :param log: Every result input for log.
-    :return: If the key "status" is 200,discard this piece of result.So only log error result
-    """
-    if isinstance(log, dict):
-        if log.get('status') != 200:
-            logging.warning(log)
-    else:
-        logging.warning(log)
 
 
 def process(result_list):
