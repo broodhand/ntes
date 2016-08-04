@@ -36,7 +36,7 @@ def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, 
         callback = scheme_dict[scheme]['callback']
         process = scheme_dict[scheme]['process']
     except Exception as e:
-        logging.warning('<ntesDS.data> scheme name error %s' % e)
+        logging.warning('<ntesDS.data.get_data> scheme name error %s' % e)
         return False
 
     try:
@@ -47,5 +47,5 @@ def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, 
         result = res.get()
         return result
     except Exception as e:
-        logging.warning('<ntesDS.data> Getting data error %s' % e)
+        logging.warning('<ntesDS.data.get_data> Getting data error %s' % e)
         return False

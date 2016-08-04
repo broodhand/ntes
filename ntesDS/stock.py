@@ -23,7 +23,7 @@ class Base(object):
         if codes_type in generator.keys():
             self.__generator = generator[codes_type]
         else:
-            raise CodeError('Please select OF,SZ or SH')
+            raise CodeError('<ntesDS.stock.Base> Please select OF,SZ or SH')
 
         self.kwargs = dict()
         self.kwargs['codes_type'] = codes_type
@@ -44,7 +44,7 @@ class Base(object):
 
     def init(self):
         if self.__init:
-            raise CodeError('Already init')
+            raise CodeError('<ntesDS.stock.Base> Already init')
 
         self.__data_tuple = get_data(self.__generator(), scheme=self.kwargs['scheme'], timeout=self.kwargs['timeout'],
                                      retry_session=self.kwargs['retry_session'], semaphore=self.kwargs['semaphore'],
@@ -60,9 +60,9 @@ class Base(object):
 
     def refresh(self):
         if not self.__init:
-            raise CodeError('Need init first')
+            raise CodeError('<ntesDS.stock.Base> Need init first')
 
-        self.__data_tuple = get_data(list(self.__codes), scheme=self.kwargs['scheme'], timeout=self.kwargs['timeout'],
+        self.__data_tuple = get_data(sorted(self.__codes), scheme=self.kwargs['scheme'], timeout=self.kwargs['timeout'],
                                      retry_session=self.kwargs['retry_session'], semaphore=self.kwargs['semaphore'],
                                      retry_failure=self.kwargs['retry_failure'])
         if self.__data_tuple:
@@ -77,34 +77,34 @@ class Base(object):
         if self.__init:
             return self.__data
         else:
-            raise CodeError('Need init first')
+            raise CodeError('<ntesDS.stock.Base> Need init first')
 
     @property
     def report(self):
         if self.__init:
             return self.__report
         else:
-            raise CodeError('Need init first')
+            raise CodeError('<ntesDS.stock.Base> Need init first')
 
     @property
     def num(self):
         if self.__init:
             return self.__num
         else:
-            raise CodeError('Need init first')
+            raise CodeError('<ntesDS.stock.Base> Need init first')
 
     @property
     def codes(self):
         if self.__init:
             return self.__codes
         else:
-            raise CodeError('Need init first')
+            raise CodeError('<ntesDS.stock.Base> Need init first')
 
     @property
     def content(self):
         if self.__init:
             return self.__content
         else:
-            raise CodeError('Need init first')
+            raise CodeError('<ntesDS.stock.Base> Need init first')
 
 

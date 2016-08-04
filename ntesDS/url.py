@@ -16,7 +16,7 @@ def _make_url(*codes, input_max=1000, prefix='http://api.money.126.net/data/feed
     code_list = list()
 
     if len(codes) > input_max:
-        raise ValueError('<ntesDS.base> Codes input too much.(%s > %s)' % (len(codes), input_max))
+        raise ValueError('<ntesDS.url._make_url> Codes input too much.(%s > %s)' % (len(codes), input_max))
 
     if codes:
         for code in codes:
@@ -36,4 +36,4 @@ def make_urls(codes, slices=1000):
         for code_tuple in code_generator:
             yield _make_url(*code_tuple, input_max=slices)
     else:
-        raise TypeError('Must input a generator,list or tuple')
+        raise TypeError('<ntesDS.url.make_urls>Must input a generator,list or tuple')
