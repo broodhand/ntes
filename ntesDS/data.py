@@ -2,19 +2,18 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 Get the data of ntes
 """
 import logging
 import aiohttpAPI
 from .url import make_urls
 from .scheme_default import filer as filer_default
-from .scheme_default import callback as callback_default
 from .scheme_default import process as process_default
 
 scheme_dict = {
     'default': {'filter': lambda x: filer_default(x),
-                'callback': lambda x: callback_default(x),
+                'callback': None,
                 'process': lambda x: process_default(x)
                 }
 }
