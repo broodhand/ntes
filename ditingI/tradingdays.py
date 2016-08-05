@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 trading days api for diting I(谛听1)
 """
 import logging
@@ -46,18 +46,25 @@ def init_tradingdays():
         return False
 
 
-def is_today_trade():
+def is_trade_day(input_date=None):
     global redis_cfg, keyname_data, keyname_status, db_data, db_status
 
-    today = date.today().toordinal()
+    if input_date is None:
+        input_date = date.today().toordinal()
+    elif isinstance(input_date, date):
+        input_date = input_date.toordinal()
+    else:
+        return False
+
     redis_cfg_data = dict(redis_cfg, db=db_data)
     redis_cfg_status = dict(redis_cfg, db=db_status)
 
     if redisDB.get(keyname_status, **redis_cfg_status) == 'True':
-        if redisDB.sismember(keyname_data, today, **redis_cfg_data):
+        if redisDB.sismember(keyname_data, input_date, **redis_cfg_data):
             return False
         else:
             return True
     else:
         return
+
 
