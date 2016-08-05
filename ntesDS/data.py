@@ -2,21 +2,14 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.8'
+__version__ = '0.0.9'
 Get the data of ntes
 """
 import logging
 import aiohttpAPI
 from .url import make_urls
-from .scheme_default import filer as filer_default
+from .scheme_default import filters as filters_default
 from .scheme_default import process as process_default
-
-scheme_dict = {
-    'default': {'filter': lambda x: filer_default(x),
-                'callback': None,
-                'process': lambda x: process_default(x)
-                }
-}
 
 
 def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, retry_failure=3):
@@ -30,11 +23,10 @@ def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, 
     :param retry_failure: failure retry times
     :return: The codes' data content list.
     """
-    global scheme_dict
     try:
-        filters = scheme_dict[scheme]['filter']
-        callback = scheme_dict[scheme]['callback']
-        process = scheme_dict[scheme]['process']
+        filters = _Scheme.filter[scheme]
+        callback = _Scheme.callback[scheme]
+        process = _Scheme.process[scheme]
     except Exception as e:
         logging.warning('<ntesDS.data.get_data> scheme name error %s' % e)
         return False
@@ -49,3 +41,9 @@ def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, 
     except Exception as e:
         logging.warning('<ntesDS.data.get_data> Getting data error %s' % e)
         return False
+
+
+class _Scheme(object):
+    filter = dict(default=filters_default)
+    callback = dict(default=None)
+    process = dict(default=process_default)
