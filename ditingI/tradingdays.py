@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 trading days api for diting I(谛听1)
 """
 import logging
@@ -14,35 +14,23 @@ from datetime import date
 import redisDB
 
 
-class _Tradingdays(object):
-    try:
-        tradingdays_cfg = config.diting['tradingdays']  # Get config from config.py
-        redis_cfg = tradingdays_cfg['redisDB']
-        keyname_data = tradingdays_cfg['keyname_data']
-        keyname_status = tradingdays_cfg['keyname_status']
-        db_data = tradingdays_cfg['db_data']
-        db_status = tradingdays_cfg['db_status']
-    except Exception as e:
-        raise ConfigError('<ditingI.tradingdays> Read config error')
-
-
 def init_tradingdays():
-    redis_cfg_data = dict(_Tradingdays.redis_cfg, db=_Tradingdays.db_data)
-    redis_cfg_status = dict(_Tradingdays.redis_cfg, db=_Tradingdays.db_status)
+    redis_cfg_data = dict(_Kwargs.redis_cfg, db=_Kwargs.db_data)
+    redis_cfg_status = dict(_Kwargs.redis_cfg, db=_Kwargs.db_status)
 
     try:
         stop_days = Set(map(lambda x: x.toordinal(), tradingdays_stop()))
-        result1 = stop_days.redis_mapping(_Tradingdays.keyname_data, **redis_cfg_data)
-        logging.info('<ditingI.tradingdays.init_tradingdays> add redis.%s %d' % (_Tradingdays.keyname_data, result1))
+        result1 = stop_days.redis_mapping(_Kwargs.keyname_data, **redis_cfg_data)
+        logging.info('<ditingI.tradingdays.init_tradingdays> add redis.%s %d' % (_Kwargs.keyname_data, result1))
         status = Str('True')
-        result2 = status.redis_set(_Tradingdays.keyname_status, **redis_cfg_status)
-        logging.info('<ditingI.tradingdays.init_tradingdays> Set redis.%s %d' % (_Tradingdays.keyname_status, result2))
+        result2 = status.redis_set(_Kwargs.keyname_status, **redis_cfg_status)
+        logging.info('<ditingI.tradingdays.init_tradingdays> Set redis.%s %d' % (_Kwargs.keyname_status, result2))
         logging.info('<ditingI.tradingdays.init_tradingdays> Initial trading days system ok.')
         return True
     except Exception as e:
         logging.info('<ditingI.tradingdays.init_tradingdays> Unknown error %s' % e)
-        redisDB.delkey(_Tradingdays.keyname_data, **redis_cfg_data)
-        redisDB.delkey(_Tradingdays.keyname_status, **redis_cfg_status)
+        redisDB.delkey(_Kwargs.keyname_data, **redis_cfg_data)
+        redisDB.delkey(_Kwargs.keyname_status, **redis_cfg_status)
         return False
 
 
@@ -54,11 +42,11 @@ def is_trade_day(input_date=None):
     else:
         return False
 
-    redis_cfg_data = dict(_Tradingdays.redis_cfg, db=_Tradingdays.db_data)
-    redis_cfg_status = dict(_Tradingdays.redis_cfg, db=_Tradingdays.db_status)
+    redis_cfg_data = dict(_Kwargs.redis_cfg, db=_Kwargs.db_data)
+    redis_cfg_status = dict(_Kwargs.redis_cfg, db=_Kwargs.db_status)
 
-    if redisDB.get(_Tradingdays.keyname_status, **redis_cfg_status) == 'True':
-        if redisDB.sismember(_Tradingdays.keyname_data, input_date, **redis_cfg_data):
+    if redisDB.get(_Kwargs.keyname_status, **redis_cfg_status) == 'True':
+        if redisDB.sismember(_Kwargs.keyname_data, input_date, **redis_cfg_data):
             return False
         else:
             return True
@@ -66,3 +54,13 @@ def is_trade_day(input_date=None):
         return
 
 
+class _Kwargs(object):
+    try:
+        tradingdays_cfg = config.diting['tradingdays']  # Get config from config.py
+        redis_cfg = tradingdays_cfg['redisDB']
+        keyname_data = tradingdays_cfg['keyname_data']
+        keyname_status = tradingdays_cfg['keyname_status']
+        db_data = tradingdays_cfg['db_data']
+        db_status = tradingdays_cfg['db_status']
+    except Exception as e:
+        raise ConfigError('<ditingI.tradingdays> Read config error')
