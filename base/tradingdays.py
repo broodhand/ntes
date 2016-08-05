@@ -2,16 +2,12 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 This a lib of trade date tools for the system
 """
-import logging;logging.basicConfig(level=logging.INFO)
+import logging; logging.basicConfig(level=logging.INFO)
 from datetime import date, timedelta
 from functools import reduce
-
-tradingdays_start = date(2016, 1, 1)
-tradingdays_end = date(2016, 12, 31)
-function_mapping = {2016: lambda: _tradingdays_stop_2016()}
 
 
 def _get_weekends(start_date, end_date):
@@ -42,18 +38,16 @@ def _tradingdays_stop_2016():
 
 
 def tradingdays_stop():
-    global function_mapping
     year = date.today().year
-    if year in function_mapping.keys():
-        return function_mapping[year]()
+    if year in _TradingDays.stop.keys():
+        return _TradingDays.stop[year]()
     else:
         raise TradingdaysError('<base.tradingdays.tradingdays_stop> Have no this year function')
 
 
 def istradingday(day):
-    global tradingdays_start, tradingdays_end
     stopdays = tradingdays_stop()
-    if day > tradingdays_end or day < tradingdays_start:
+    if day > _TradingDays.end or day < _TradingDays.start:
         raise TradingdaysError("<base.tradingdays.istradingday> Out of the data date range")
     if day in stopdays:
         return False
@@ -63,3 +57,10 @@ def istradingday(day):
 
 class TradingdaysError(Exception):
     pass
+
+
+class _TradingDays(object):
+    start = date(2016, 1, 1)
+    end = date(2016, 12, 31)
+    stop = {2016: _tradingdays_stop_2016}
+
