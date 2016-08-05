@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 This a lib of trade date tools for the system
 """
 import logging; logging.basicConfig(level=logging.INFO)
@@ -39,15 +39,15 @@ def _tradingdays_stop_2016():
 
 def tradingdays_stop():
     year = date.today().year
-    if year in _TradingDays.stop.keys():
-        return _TradingDays.stop[year]()
+    if year in _Kwargs.stop.keys():
+        return _Kwargs.stop[year]()
     else:
         raise TradingdaysError('<base.tradingdays.tradingdays_stop> Have no this year function')
 
 
 def istradingday(day):
     stopdays = tradingdays_stop()
-    if day > _TradingDays.end or day < _TradingDays.start:
+    if day > _Kwargs.end or day < _Kwargs.start:
         raise TradingdaysError("<base.tradingdays.istradingday> Out of the data date range")
     if day in stopdays:
         return False
@@ -59,7 +59,7 @@ class TradingdaysError(Exception):
     pass
 
 
-class _TradingDays(object):
+class _Kwargs(object):
     start = date(2016, 1, 1)
     end = date(2016, 12, 31)
     stop = {2016: _tradingdays_stop_2016}
