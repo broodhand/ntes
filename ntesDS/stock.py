@@ -2,26 +2,19 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 Stock lib
 """
 import logging; logging.basicConfig(level=logging.INFO)
-from .code import of_code_generator, sh_code_generator, sz_code_generator
+from .code import Generator
 from .error import CodeError
 from .data import get_data
-
-generator = {
-    'OF': of_code_generator,
-    'SH': sh_code_generator,
-    'SZ': sz_code_generator
-}
 
 
 class Base(object):
     def __init__(self, codes_type, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
-        global generator
-        if codes_type in generator.keys():
-            self.__generator = generator[codes_type]
+        if codes_type in Generator.all:
+            self.__generator = Generator.function[codes_type]
         else:
             raise CodeError('<ntesDS.stock.Base> Please select OF,SZ or SH')
 
@@ -108,3 +101,16 @@ class Base(object):
             raise CodeError('<ntesDS.stock.Base> Need init first')
 
 
+class OF(Base):
+    def __init__(self):
+        super(OF, self).__init__('OF', scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True)
+
+
+class SH(Base):
+    def __init__(self):
+        super(SH, self).__init__('SH', scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True)
+
+
+class SZ(Base):
+    def __init__(self):
+        super(SZ, self).__init__('SZ', scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True)
