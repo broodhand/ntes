@@ -2,19 +2,9 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.2.2'
+__version__ = '0.2.4'
 Code lib
 """
-
-
-def into_standard(code):
-    if len(code) == 6 and code.isdigit():
-        return code+'.OF'
-    if len(code) == 7 and code.isdigit():
-        if code[0] == '0':
-            return code[1:] + '.SH'
-        elif code[0] == '1':
-            return code[1:] + '.SZ'
 
 
 def _generate_code(dit):
@@ -48,6 +38,26 @@ def sz_code_generator():
     """
     for code in _generate_code(6):
         yield '1' + code
+
+
+def into_standard(code):
+    if len(code) == 6 and code.isdigit():
+        return code+'.OF'
+    if len(code) == 7 and code.isdigit():
+        if code[0] == '0':
+            return code[1:] + '.SH'
+        elif code[0] == '1':
+            return code[1:] + '.SZ'
+
+
+def from_standard(code):
+    if isinstance(code, str):
+        if code.endswith('.OF'):
+            return code[:-3]
+        elif code.endswith('.SH'):
+            return '0' + code[:-3]
+        elif code.endswith('.SZ'):
+            return '1' + code[:-3]
 
 
 class Generator(object):
