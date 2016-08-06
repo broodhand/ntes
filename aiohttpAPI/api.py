@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 The API for aiohttpAPI
 """
 from collections import Iterator
@@ -35,7 +35,11 @@ class Urls(object):
 
 class Url(object):
     def __init__(self, *url, **kwargs):
-        self.url = url
+        if isinstance(url, (tuple, str)):
+            self.url = url
+        else:
+            raise TypeError('<aiohttpAPI.client.Urls> The param urls must input string ')
+
         self.timeout = kwargs.get('timeout', 1)
         self.res_type = kwargs.get('res_type', 'text')
         self.encoding = kwargs.get('encoding', 'utf-8')
