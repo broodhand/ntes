@@ -4,7 +4,6 @@ Created on Thu Mar 24 11:02:14 2016
 __version__ = '0.0.2'
 @author:Zhao Cheng
 """
-import logging; logging.basicConfig(level=logging.DEBUG)
 import redisDB.api
 
 
@@ -59,15 +58,12 @@ class Dict(dict):
         self[key] = value
 
 
-class Str(str):
-    def __init__(self, value):
-        super(Str, self).__init__()
-        self = value
+class Str(str, object):
+    def __init__(self, *args, **kwargs):
+        super(Str, self).__init__(*args, **kwargs)
 
     def redis_set(self, key_name, **kwargs_redis):
             return redisDB.api.set(key_name, self, **kwargs_redis)
 
     def redis_mappingnx(self, key_name, **kwargs_redis):
             return redisDB.api.set(key_name, self, nx=True, **kwargs_redis)
-
-
