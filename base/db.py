@@ -12,19 +12,19 @@ class Set(set):
     def __init__(self, *args, **kwargs):
         super(Set, self).__init__(*args, **kwargs)
 
-    def redis_update(self, key_name, **kwargs):
-        return redisDB.api.sadd(key_name, *tuple(self), **kwargs)
+    def redis_update(self, key_name, **kwargs_redis):
+        return redisDB.api.sadd(key_name, *tuple(self), **kwargs_redis)
 
-    def redis_mapping(self, key_name, **kwargs):
-        if not redisDB.api.exists(key_name):
-            return redisDB.api.sadd(key_name, *tuple(self), **kwargs)
+    def redis_mapping(self, key_name, **kwargs_redis):
+        if not redisDB.api.exists(key_name, **kwargs_redis):
+            return redisDB.api.sadd(key_name, *tuple(self), **kwargs_redis)
         else:
-            redisDB.api.delkey(key_name, **kwargs)
-            return redisDB.api.sadd(key_name, *tuple(self), **kwargs)
+            redisDB.api.delkey(key_name, **kwargs_redis)
+            return redisDB.api.sadd(key_name, *tuple(self), **kwargs_redis)
 
-    def redis_mappingnx(self, key_name, **kwargs):
-        if not redisDB.api.exists(key_name):
-            return redisDB.api.sadd(key_name, *tuple(self), **kwargs)
+    def redis_mappingnx(self, key_name, **kwargs_redis):
+        if not redisDB.api.exists(key_name, **kwargs_redis):
+            return redisDB.api.sadd(key_name, *tuple(self), **kwargs_redis)
         else:
             return False
 
@@ -33,21 +33,30 @@ class Dict(dict):
     def __init__(self, *args, **kwargs):
         super(Dict, self).__init__(*args, **kwargs)
 
-    def redis_update(self, key_name, **kwargs):
-        return redisDB.api.hmset(key_name, self, **kwargs)
+    def redis_update(self, key_name, **kwargs_redis):
+        return redisDB.api.hmset(key_name, self, **kwargs_redis)
 
-    def redis_mapping(self, key_name, **kwargs):
-        if not redisDB.api.exists(key_name):
-            return redisDB.api.hmset(key_name, self, **kwargs)
+    def redis_mapping(self, key_name, **kwargs_redis):
+        if not redisDB.api.exists(key_name, **kwargs_redis):
+            return redisDB.api.hmset(key_name, self, **kwargs_redis)
         else:
-            redisDB.api.delkey(key_name, **kwargs)
-            return redisDB.api.hmset(key_name, self, **kwargs)
+            redisDB.api.delkey(key_name, **kwargs_redis)
+            return redisDB.api.hmset(key_name, self, **kwargs_redis)
 
-    def redis_mappingnx(self, key_name, **kwargs):
-        if not redisDB.api.exists(key_name):
-            return redisDB.api.hmset(key_name, self, **kwargs)
+    def redis_mappingnx(self, key_name, **kwargs_redis):
+        if not redisDB.api.exists(key_name, **kwargs_redis):
+            return redisDB.api.hmset(key_name, self, **kwargs_redis)
         else:
             return False
+
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError(r"'Dict' object has no attribute '%s'" % key)
+
+    def __setattr__(self, key, value):
+        self[key] = value
 
 
 class Str(str):
@@ -55,10 +64,10 @@ class Str(str):
         super(Str, self).__init__()
         self = value
 
-    def redis_set(self, key_name, **kwargs):
-            return redisDB.api.set(key_name, self, **kwargs)
+    def redis_set(self, key_name, **kwargs_redis):
+            return redisDB.api.set(key_name, self, **kwargs_redis)
 
-    def redis_mappingnx(self, key_name, **kwargs):
-            return redisDB.api.set(key_name, self, nx=True, **kwargs)
+    def redis_mappingnx(self, key_name, **kwargs_redis):
+            return redisDB.api.set(key_name, self, nx=True, **kwargs_redis)
 
 
