@@ -7,6 +7,16 @@ Code lib
 """
 
 
+def into_standard(code):
+    if len(code) == 6 and code.isdigit():
+        return code+'.OF'
+    if len(code) == 7 and code.isdigit():
+        if code[0] == '0':
+            return code[1:] + '.SH'
+        elif code[0] == '1':
+            return code[1:] + '.SZ'
+
+
 def _generate_code(dit):
     """Generate the codes by digit"""
     for x in range(10 ** dit):
@@ -47,3 +57,11 @@ class Generator(object):
         'SH': sh_code_generator,
         'SZ': sz_code_generator
     }
+
+
+class Convert(object):
+    callback = {
+        'ntes': lambda x: x,
+        'standard': into_standard
+    }
+

@@ -7,9 +7,22 @@ Get the data of ntes
 """
 import logging
 import aiohttpAPI
-from .url import make_urls
+from base import make_urls as _make_urls
 from .scheme_default import filters as filters_default
 from .scheme_default import process as process_default
+
+
+def make_urls(codes, slices=1000, prefix='http://api.money.126.net/data/feed/', suffix=',money.api', separator=','):
+    """
+    To make the url for ntes api
+    :param codes:Input codes must be a Iterator
+    :param slices: code slices for once inputting url
+    :param prefix: ntes api url prefix
+    :param suffix: ntes api url suffix
+    :param separator: ntes api code separator
+    :return: generator for getting data url
+    """
+    return _make_urls(codes, slices, prefix, suffix, separator)
 
 
 def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, retry_failure=3):

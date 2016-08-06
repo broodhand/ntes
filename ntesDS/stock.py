@@ -5,8 +5,7 @@ Created on Wed Mar 23 12:37:57 2016
 __version__ = '0.0.4'
 Stock lib
 """
-import logging; logging.basicConfig(level=logging.INFO)
-from .code import Generator
+from .code import Generator, Convert
 from .error import CodeError
 from .data import get_data
 
@@ -86,10 +85,9 @@ class Base(object):
         else:
             raise CodeError('<ntesDS.stock.Base> Need init first')
 
-    @property
-    def codes(self):
+    def codes(self, type_code='ntes'):
         if self.__init:
-            return self.__codes
+            return set(map(Convert.callback[type_code], self.__codes))
         else:
             raise CodeError('<ntesDS.stock.Base> Need init first')
 
@@ -102,15 +100,19 @@ class Base(object):
 
 
 class OF(Base):
-    def __init__(self):
-        super(OF, self).__init__('OF', scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True)
+    def __init__(self, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
+        super(OF, self).__init__('OF', scheme=scheme, timeout=timeout, retry_session=retry_session, semaphore=semaphore,
+                                 retry_failure=retry_failure)
 
 
 class SH(Base):
-    def __init__(self):
-        super(SH, self).__init__('SH', scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True)
+    def __init__(self, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
+        super(SH, self).__init__('SH', scheme=scheme, timeout=timeout, retry_session=retry_session, semaphore=semaphore,
+                                 retry_failure=retry_failure)
 
 
 class SZ(Base):
-    def __init__(self):
-        super(SZ, self).__init__('SZ', scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True)
+    def __init__(self, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
+        super(SZ, self).__init__('SZ', scheme=scheme, timeout=timeout, retry_session=retry_session, semaphore=semaphore,
+                                 retry_failure=retry_failure)
+
