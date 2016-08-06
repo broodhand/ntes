@@ -2,17 +2,15 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 Scheme default
 """
 import re
 import json
 from functools import reduce
 
-re_ntes = re.compile(r"_ntes_quote_callback\((?P<data>.*)\);")
 
-
-def filer(content):
+def filters(content):
     """
     Call back function for the aiohttpAPI.get_urls to filer every piece of result content from the ntes api.
     :param content: The result input.It's a str like"_ntes_quote_callback({...})". "{...}" is the json str.
@@ -20,7 +18,7 @@ def filer(content):
     """
     if isinstance(content, dict):
         if content.get('content') is not None:
-            json_str = re_ntes.match(content['content']).group('data')
+            json_str = _Re.ntes.match(content['content']).group('data')
             content_dict = json.loads(json_str)
             if len(content_dict) == 0:
                 return None
@@ -42,3 +40,7 @@ def process(result_list):
         return reduce(lambda x, y: dict(x, **y), result_list)
     else:
         return None
+
+
+class _Re(object):
+    ntes = re.compile(r"_ntes_quote_callback\((?P<data>.*)\);")
