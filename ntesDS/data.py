@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.9'
+__version__ = '0.0.10'
 Get the data of ntes
 """
 import logging
@@ -10,6 +10,8 @@ import aiohttpAPI
 from base import make_urls as _make_urls
 from .scheme_default import filters as filters_default
 from .scheme_default import process as process_default
+from .scheme_of import filters as filters_of
+from .scheme_of import process as process_of
 
 
 def make_urls(codes, slices=1000, prefix='http://api.money.126.net/data/feed/', suffix=',money.api', separator=','):
@@ -57,6 +59,6 @@ def get_data(codes, scheme='default', timeout=3, retry_session=3, semaphore=20, 
 
 
 class _Scheme(object):
-    filter = dict(default=filters_default)
-    callback = dict(default=None)
-    process = dict(default=process_default)
+    filter = dict(default=filters_default, of=filters_of)
+    callback = dict(default=None, of=None)
+    process = dict(default=process_default, of=process_of)
