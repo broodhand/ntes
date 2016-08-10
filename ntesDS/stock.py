@@ -2,12 +2,14 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 Stock lib
 """
 from .code import Generator, Convert
 from .error import CodeError
 from .data import get_data
+from base import Set, Dict
+import redisDB
 
 
 class Base(object):
@@ -47,8 +49,7 @@ class Base(object):
             self.__num = len(self.__data)
             self.__codes = set(self.__data.keys())
             self.__content = list(self.__data.values())
-
-        self.__init = True
+            self.__init = True
 
     def refresh(self):
         if not self.__init:
@@ -85,11 +86,14 @@ class Base(object):
         else:
             raise CodeError('<ntesDS.stock.Base> Need init first')
 
-    def codes(self, type_code='ntes'):
+    def codes(self, standard=False):
         if self.__init:
-            return set(map(Convert.callback[type_code], self.__codes))
+            if standard:
+                return set(map(Convert.callback['standard'], self.__codes))
+            else:
+                return self.__codes
         else:
-            raise CodeError('<ntesDS.stock.Base> Need init first')
+            raise CodeError('<ntesDS.stock.Base> Need init first ')
 
     @property
     def content(self):
@@ -98,9 +102,44 @@ class Base(object):
         else:
             raise CodeError('<ntesDS.stock.Base> Need init first')
 
+    def redis_update_codes(self, key_name, db, **kwargs_redis):
+        kwargs_redis['db'] = db
+        if self.__init:
+            codes = Set(self.codes())
+            return codes.redis_update(key_name, **kwargs_redis)
+        else:
+            raise CodeError('<ntesDS.stock.Base> Need init first')
+
+    def redis_mapping_codes(self, key_name, db, **kwargs_redis):
+        kwargs_redis['db'] = db
+        if self.__init:
+            codes = Set(self.codes())
+            return codes.redis_mapping(key_name, **kwargs_redis)
+        else:
+            raise CodeError('<ntesDS.stock.Base> Need init first')
+
+    def redis_mappingnx_codes(self, key_name, db, **kwargs_redis):
+        kwargs_redis['db'] = db
+        if self.__init:
+            codes = Set(self.codes())
+            return codes.redis_mappingnx(key_name, **kwargs_redis)
+        else:
+            raise CodeError('<ntesDS.stock.Base> Need init first')
+
+    def redis_mapping_data(self, db, **kwargs_redis):
+        kwargs_redis['db'] = db
+        pipeline = redisDB.pipeline(**kwargs_redis)
+        if self.__init:
+            redisDB.flushdb(**kwargs_redis)
+            for key, content in self.data.items():
+                Dict(content).redis_mapping_pipeline(key, pipeline)
+            return pipeline.execute()
+        else:
+            raise CodeError('<ntesDS.stock.Base> Need init first')
+
 
 class OF(Base):
-    def __init__(self, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
+    def __init__(self, scheme='of', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
         super(OF, self).__init__('OF', scheme=scheme, timeout=timeout, retry_session=retry_session, semaphore=semaphore,
                                  retry_failure=retry_failure)
 
