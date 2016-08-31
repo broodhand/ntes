@@ -40,6 +40,15 @@ def sz_code_generator():
         yield '1' + code
 
 
+def sh_index_code_generator():
+    """
+    Get ntes sh index codes
+    :return: codes generator
+    """
+    for code in _generate_code(3):
+        yield '0000' + code
+
+
 def into_standard(code):
     if len(code) == 6 and code.isdigit():
         return code+'.OF'
@@ -61,12 +70,13 @@ def from_standard(code):
 
 
 class Generator(object):
-    all = {'OF', 'SH', 'SZ'}
     function = {
         'OF': of_code_generator,
         'SH': sh_code_generator,
-        'SZ': sz_code_generator
+        'SZ': sz_code_generator,
+        'SH_INDEX': sh_index_code_generator
     }
+    all = function.keys()
 
 
 class Convert(object):
