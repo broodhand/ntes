@@ -71,7 +71,7 @@ class connection(threading.local):
             self._client = redis.StrictRedis(connection_pool=self._pool)
             self._connect = True
         else:
-            raise RedisError('Already connect')
+            raise RedisError('<redisDB.connect.connection> Already connect')
         return True
 
     def client(self):
@@ -82,7 +82,7 @@ class connection(threading.local):
         if self._connect is True:
             return self._client
         else:
-            raise RedisError('Need to connect redis first')
+            raise RedisError('<redisDB.connect.connection> Need to connect redis first')
 
     def set_config(self, **kwargs):
         "Set the kwarg which pass to the Class redis.ConnectionPool"
@@ -92,7 +92,7 @@ class connection(threading.local):
             self._pool = redis.ConnectionPool(**self._kwargs)
             self._client = redis.StrictRedis(connection_pool=self._pool)
         else:
-            raise RedisError('Need to connect first')
+            raise RedisError('<redisDB.connect.connection> Need to connect first')
         return True
 
     def close(self):
@@ -104,7 +104,7 @@ class connection(threading.local):
             self._kwargs = self._default.copy()
             self._connect = False
         else:
-            raise RedisError('Redis is not connected now.')
+            raise RedisError('<redisDB.connect.connection> Redis is not connected now.')
         return True
 
     def __enter__(self):
@@ -113,4 +113,3 @@ class connection(threading.local):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
-

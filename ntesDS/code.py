@@ -69,6 +69,16 @@ def from_standard(code):
             return '1' + code[:-3]
 
 
+class Code(object):
+    @classmethod
+    def genertor_dit(cls, dit):
+        for x in range(10 ** dit):
+            yield str(x).zfill(dit)
+
+    def __init__(self):
+        pass
+
+
 class Generator(object):
     function = {
         'OF': of_code_generator,

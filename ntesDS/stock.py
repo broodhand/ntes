@@ -2,9 +2,10 @@
 """
 Created on Wed Mar 23 12:37:57 2016
 @author: Zhao Cheng
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 Stock lib
 """
+from collections import Iterator
 from .code import Generator, Convert
 from .error import CodeError
 from .data import get_data
@@ -14,10 +15,14 @@ import redisDB
 
 class Base(object):
     def __init__(self, codes_type, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
-        if codes_type in Generator.all:
-            self.__generator = Generator.function[codes_type]
-        else:
-            raise CodeError('<ntesDS.stock.Base> Please select OF,SZ or SH')
+        if isinstance(codes_type, str):
+            if codes_type in Generator.all:
+                self.__generator = Generator.function[codes_type]
+            else:
+                raise CodeError('<ntesDS.stock.Base> Please select OF,SZ or SH')
+
+        elif isinstance(codes_type, Iterator):
+            self.__generator = lambda: codes_type
 
         self.kwargs = dict()
         self.kwargs['codes_type'] = codes_type
@@ -28,7 +33,6 @@ class Base(object):
         self.kwargs['retry_failure'] = retry_failure
 
         self.__init = False
-
         self.__data_tuple = None
         self.__data = None
         self.__report = None
@@ -144,14 +148,31 @@ class OF(Base):
                                  retry_failure=retry_failure)
 
 
+class OFGeneral(Base):
+    def __init__(self, scheme='of_general', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
+        super(OFGeneral, self).__init__('OF', scheme=scheme, timeout=timeout, retry_session=retry_session,
+                                        semaphore=semaphore, retry_failure=retry_failure)
+
+
+class OFCurrency(Base):
+    def __init__(self, scheme='of_currency', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
+        super(OFCurrency, self).__init__('OF', scheme=scheme, timeout=timeout, retry_session=retry_session,
+                                         semaphore=semaphore, retry_failure=retry_failure)
+
+
 class SH(Base):
     def __init__(self, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
         super(SH, self).__init__('SH', scheme=scheme, timeout=timeout, retry_session=retry_session, semaphore=semaphore,
                                  retry_failure=retry_failure)
 
 
+class SHIndex(Base):
+    def __init__(self, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
+        super(SHIndex, self).__init__('SH_INDEX', scheme=scheme, timeout=timeout, retry_session=retry_session,
+                                      semaphore=semaphore, retry_failure=retry_failure)
+
+
 class SZ(Base):
     def __init__(self, scheme='default', timeout=1, retry_session=3, semaphore=20, retry_failure=True):
         super(SZ, self).__init__('SZ', scheme=scheme, timeout=timeout, retry_session=retry_session, semaphore=semaphore,
                                  retry_failure=retry_failure)
-

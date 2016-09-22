@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ntes.iml" filepath="$PROJECT_DIR$/.idea/ntes.iml" />
+      <module fileurl="file://$USER_HOME$/PycharmProjects/spbg/.idea/spbg.iml" filepath="$USER_HOME$/PycharmProjects/spbg/.idea/spbg.iml" />
     </modules>
   </component>
 </project>

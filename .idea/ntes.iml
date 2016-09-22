@@ -5,6 +5,7 @@
     <orderEntry type="jdk" jdkName="Python 3.5.1 (~/anaconda3/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="servers_manager" />
+    <orderEntry type="module" module-name="spbg" />
   </component>
   <component name="TestRunnerService">
     <option name="projectConfiguration" value="Nosetests" />

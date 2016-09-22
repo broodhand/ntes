@@ -64,3 +64,6 @@ class _Kwargs(object):
     end = date(2016, 12, 31)
     stop = {2016: _tradingdays_stop_2016}
 
+
+
+

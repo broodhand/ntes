@@ -19,7 +19,7 @@ def get_set_key(value, **kwargs):
     if key:
         return key
     else:
-        raise RedisKeyError("Must input string or class Set")
+        raise RedisKeyError("<redisDB.orm.get_set_key> Must input string or class Set")
 
 
 class Key(object):
@@ -28,7 +28,7 @@ class Key(object):
             self.name = key_name
             self.cfg_connect = kwargs
         else:
-            raise RedisKeyError('Key not exists')
+            raise RedisKeyError('<redisDB.orm.Key> Key not exists')
 
     @property
     def exists(self):
@@ -54,7 +54,7 @@ class Set(object):
             self.key = key
             self.redis_cfg = kwargs
         else:
-            raise RedisKeyError("Key's type must be set")
+            raise RedisKeyError("<redisDB.orm.Set> Key's type must be set")
 
     def __repr__(self):
         return str(self.members)
@@ -116,4 +116,3 @@ class Set(object):
     @classmethod
     def sadd(cls, key_name, *members, **redis_cfg):
         return api.sadd(key_name, *members, **redis_cfg)
-

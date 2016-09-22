@@ -2,15 +2,18 @@
   <dictionary name="develop">
     <words>
       <w>aiohttp</w>
+      <w>asyncio</w>
       <w>checkdict</w>
       <w>clientctx</w>
       <w>connectionctx</w>
       <w>connectionpool</w>
       <w>connectpool</w>
+      <w>converadt</w>
       <w>dbnum</w>
       <w>delkey</w>
       <w>dictmsg</w>
       <w>dicttojson</w>
+      <w>flushall</w>
       <w>functools</w>
       <w>futuredict</w>
       <w>initctx</w>
@@ -27,6 +30,7 @@
       <w>msgdict</w>
       <w>msgjson</w>
       <w>myuuid</w>
+      <w>navdate</w>
       <w>poolcfg</w>
       <w>poollist</w>
       <w>redisctx</w>
